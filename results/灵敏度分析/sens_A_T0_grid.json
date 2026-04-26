@@ -1,0 +1,968 @@
+{
+  "problem": "Q1 · A × T0 灵敏度扫描（Kaiwu SDK 经典 SA）",
+  "kaiwu_version": "1.3.1",
+  "n_customers": 15,
+  "A_grid": [
+    50.0,
+    100.0,
+    150.0,
+    200.0,
+    300.0
+  ],
+  "T0_grid": [
+    20.0,
+    50.0,
+    100.0,
+    200.0,
+    500.0
+  ],
+  "n_seeds": 3,
+  "sa_fixed": {
+    "alpha": 0.995,
+    "cutoff_temperature": 0.001,
+    "iterations_per_t": 80,
+    "size_limit": 200,
+    "process_num": 1,
+    "flag_evolution_history": false,
+    "verbose": false
+  },
+  "feas_rate_grid": [
+    [
+      0.005581427015250545,
+      0.005,
+      0.005,
+      0.005,
+      0.008333333333333333
+    ],
+    [
+      0.006035735127149409,
+      0.005,
+      0.005,
+      0.005,
+      0.005
+    ],
+    [
+      0.00568075117370892,
+      0.005060449050086356,
+      0.006666666666666667,
+      0.005,
+      0.005
+    ],
+    [
+      0.0059615252254112475,
+      0.005624912428191116,
+      0.005,
+      0.005,
+      0.011666666666666667
+    ],
+    [
+      0.005477948232516072,
+      0.006451914098972922,
+      0.005154826958105647,
+      0.005,
+      0.005
+    ]
+  ],
+  "best_cost_grid": [
+    [
+      61.0,
+      61.0,
+      56.0,
+      58.0,
+      53.0
+    ],
+    [
+      57.0,
+      57.0,
+      66.0,
+      54.0,
+      59.0
+    ],
+    [
+      58.0,
+      56.0,
+      57.0,
+      56.0,
+      59.0
+    ],
+    [
+      63.0,
+      57.0,
+      62.0,
+      57.0,
+      53.0
+    ],
+    [
+      51.0,
+      57.0,
+      56.0,
+      61.0,
+      54.0
+    ]
+  ],
+  "polished_cost_grid": [
+    [
+      30.0,
+      29.0,
+      29.0,
+      31.0,
+      29.0
+    ],
+    [
+      30.0,
+      29.0,
+      30.0,
+      29.0,
+      32.0
+    ],
+    [
+      31.0,
+      31.0,
+      31.0,
+      29.0,
+      31.0
+    ],
+    [
+      31.0,
+      29.0,
+      31.0,
+      30.0,
+      29.0
+    ],
+    [
+      30.0,
+      30.0,
+      31.0,
+      29.0,
+      29.0
+    ]
+  ],
+  "runs": [
+    {
+      "A": 50.0,
+      "T0": 20.0,
+      "seed": 20260426,
+      "n_unique": 192,
+      "n_feasible": 1,
+      "feas_rate": 0.005208333333333333,
+      "best_cost": 61.0,
+      "best_qubo": 69226.0,
+      "time_sec": 0.537
+    },
+    {
+      "A": 50.0,
+      "T0": 20.0,
+      "seed": 20260427,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 67.0,
+      "best_qubo": 69237.0,
+      "time_sec": 0.568
+    },
+    {
+      "A": 50.0,
+      "T0": 20.0,
+      "seed": 20260428,
+      "n_unique": 153,
+      "n_feasible": 1,
+      "feas_rate": 0.006535947712418301,
+      "best_cost": 68.0,
+      "best_qubo": 69240.0,
+      "time_sec": 0.557
+    },
+    {
+      "A": 50.0,
+      "T0": 50.0,
+      "seed": 20260436,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 66.0,
+      "best_qubo": 69236.0,
+      "time_sec": 0.634
+    },
+    {
+      "A": 50.0,
+      "T0": 50.0,
+      "seed": 20260437,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 63.0,
+      "best_qubo": 69227.0,
+      "time_sec": 0.611
+    },
+    {
+      "A": 50.0,
+      "T0": 50.0,
+      "seed": 20260438,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 61.0,
+      "best_qubo": 69224.0,
+      "time_sec": 0.625
+    },
+    {
+      "A": 50.0,
+      "T0": 100.0,
+      "seed": 20260446,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 66.0,
+      "best_qubo": 69232.0,
+      "time_sec": 0.65
+    },
+    {
+      "A": 50.0,
+      "T0": 100.0,
+      "seed": 20260447,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 64.0,
+      "best_qubo": 69229.0,
+      "time_sec": 0.684
+    },
+    {
+      "A": 50.0,
+      "T0": 100.0,
+      "seed": 20260448,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 56.0,
+      "best_qubo": 69216.0,
+      "time_sec": 0.67
+    },
+    {
+      "A": 50.0,
+      "T0": 200.0,
+      "seed": 20260456,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 68.0,
+      "best_qubo": 69239.0,
+      "time_sec": 0.726
+    },
+    {
+      "A": 50.0,
+      "T0": 200.0,
+      "seed": 20260457,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 58.0,
+      "best_qubo": 69217.0,
+      "time_sec": 0.742
+    },
+    {
+      "A": 50.0,
+      "T0": 200.0,
+      "seed": 20260458,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 63.0,
+      "best_qubo": 69227.0,
+      "time_sec": 0.732
+    },
+    {
+      "A": 50.0,
+      "T0": 500.0,
+      "seed": 20260466,
+      "n_unique": 200,
+      "n_feasible": 2,
+      "feas_rate": 0.01,
+      "best_cost": 71.0,
+      "best_qubo": 69243.0,
+      "time_sec": 0.79
+    },
+    {
+      "A": 50.0,
+      "T0": 500.0,
+      "seed": 20260467,
+      "n_unique": 200,
+      "n_feasible": 2,
+      "feas_rate": 0.01,
+      "best_cost": 53.0,
+      "best_qubo": 69206.0,
+      "time_sec": 0.832
+    },
+    {
+      "A": 50.0,
+      "T0": 500.0,
+      "seed": 20260468,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 65.0,
+      "best_qubo": 69231.0,
+      "time_sec": 0.817
+    },
+    {
+      "A": 100.0,
+      "T0": 20.0,
+      "seed": 20260526,
+      "n_unique": 177,
+      "n_feasible": 1,
+      "feas_rate": 0.005649717514124294,
+      "best_cost": 57.0,
+      "best_qubo": 135217.0,
+      "time_sec": 0.529
+    },
+    {
+      "A": 100.0,
+      "T0": 20.0,
+      "seed": 20260527,
+      "n_unique": 183,
+      "n_feasible": 1,
+      "feas_rate": 0.00546448087431694,
+      "best_cost": 65.0,
+      "best_qubo": 135231.0,
+      "time_sec": 0.572
+    },
+    {
+      "A": 100.0,
+      "T0": 20.0,
+      "seed": 20260528,
+      "n_unique": 143,
+      "n_feasible": 1,
+      "feas_rate": 0.006993006993006993,
+      "best_cost": 66.0,
+      "best_qubo": 135237.0,
+      "time_sec": 0.576
+    },
+    {
+      "A": 100.0,
+      "T0": 50.0,
+      "seed": 20260536,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 57.0,
+      "best_qubo": 135217.0,
+      "time_sec": 0.647
+    },
+    {
+      "A": 100.0,
+      "T0": 50.0,
+      "seed": 20260537,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 62.0,
+      "best_qubo": 135226.0,
+      "time_sec": 0.604
+    },
+    {
+      "A": 100.0,
+      "T0": 50.0,
+      "seed": 20260538,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 68.0,
+      "best_qubo": 135237.0,
+      "time_sec": 0.621
+    },
+    {
+      "A": 100.0,
+      "T0": 100.0,
+      "seed": 20260546,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 66.0,
+      "best_qubo": 135235.0,
+      "time_sec": 0.655
+    },
+    {
+      "A": 100.0,
+      "T0": 100.0,
+      "seed": 20260547,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 68.0,
+      "best_qubo": 135240.0,
+      "time_sec": 0.641
+    },
+    {
+      "A": 100.0,
+      "T0": 100.0,
+      "seed": 20260548,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 72.0,
+      "best_qubo": 135245.0,
+      "time_sec": 0.639
+    },
+    {
+      "A": 100.0,
+      "T0": 200.0,
+      "seed": 20260556,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 54.0,
+      "best_qubo": 135209.0,
+      "time_sec": 0.713
+    },
+    {
+      "A": 100.0,
+      "T0": 200.0,
+      "seed": 20260557,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 73.0,
+      "best_qubo": 135249.0,
+      "time_sec": 0.738
+    },
+    {
+      "A": 100.0,
+      "T0": 200.0,
+      "seed": 20260558,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 73.0,
+      "best_qubo": 135247.0,
+      "time_sec": 0.734
+    },
+    {
+      "A": 100.0,
+      "T0": 500.0,
+      "seed": 20260566,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 61.0,
+      "best_qubo": 135224.0,
+      "time_sec": 0.806
+    },
+    {
+      "A": 100.0,
+      "T0": 500.0,
+      "seed": 20260567,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 70.0,
+      "best_qubo": 135241.0,
+      "time_sec": 0.774
+    },
+    {
+      "A": 100.0,
+      "T0": 500.0,
+      "seed": 20260568,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 59.0,
+      "best_qubo": 135220.0,
+      "time_sec": 0.79
+    },
+    {
+      "A": 150.0,
+      "T0": 20.0,
+      "seed": 20260626,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 61.0,
+      "best_qubo": 201223.0,
+      "time_sec": 0.547
+    },
+    {
+      "A": 150.0,
+      "T0": 20.0,
+      "seed": 20260627,
+      "n_unique": 142,
+      "n_feasible": 1,
+      "feas_rate": 0.007042253521126761,
+      "best_cost": 63.0,
+      "best_qubo": 201228.0,
+      "time_sec": 0.557
+    },
+    {
+      "A": 150.0,
+      "T0": 20.0,
+      "seed": 20260628,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 58.0,
+      "best_qubo": 201219.0,
+      "time_sec": 0.56
+    },
+    {
+      "A": 150.0,
+      "T0": 50.0,
+      "seed": 20260636,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 72.0,
+      "best_qubo": 201246.0,
+      "time_sec": 0.626
+    },
+    {
+      "A": 150.0,
+      "T0": 50.0,
+      "seed": 20260637,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 56.0,
+      "best_qubo": 201215.0,
+      "time_sec": 0.584
+    },
+    {
+      "A": 150.0,
+      "T0": 50.0,
+      "seed": 20260638,
+      "n_unique": 193,
+      "n_feasible": 1,
+      "feas_rate": 0.0051813471502590676,
+      "best_cost": 63.0,
+      "best_qubo": 201227.0,
+      "time_sec": 0.6
+    },
+    {
+      "A": 150.0,
+      "T0": 100.0,
+      "seed": 20260646,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 59.0,
+      "best_qubo": 201223.0,
+      "time_sec": 0.627
+    },
+    {
+      "A": 150.0,
+      "T0": 100.0,
+      "seed": 20260647,
+      "n_unique": 200,
+      "n_feasible": 2,
+      "feas_rate": 0.01,
+      "best_cost": 64.0,
+      "best_qubo": 201230.0,
+      "time_sec": 0.629
+    },
+    {
+      "A": 150.0,
+      "T0": 100.0,
+      "seed": 20260648,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 57.0,
+      "best_qubo": 201215.0,
+      "time_sec": 0.661
+    },
+    {
+      "A": 150.0,
+      "T0": 200.0,
+      "seed": 20260656,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 56.0,
+      "best_qubo": 201217.0,
+      "time_sec": 0.77
+    },
+    {
+      "A": 150.0,
+      "T0": 200.0,
+      "seed": 20260657,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 56.0,
+      "best_qubo": 201214.0,
+      "time_sec": 0.827
+    },
+    {
+      "A": 150.0,
+      "T0": 200.0,
+      "seed": 20260658,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 63.0,
+      "best_qubo": 201227.0,
+      "time_sec": 0.748
+    },
+    {
+      "A": 150.0,
+      "T0": 500.0,
+      "seed": 20260666,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 59.0,
+      "best_qubo": 201221.0,
+      "time_sec": 0.805
+    },
+    {
+      "A": 150.0,
+      "T0": 500.0,
+      "seed": 20260667,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 66.0,
+      "best_qubo": 201232.0,
+      "time_sec": 0.815
+    },
+    {
+      "A": 150.0,
+      "T0": 500.0,
+      "seed": 20260668,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 64.0,
+      "best_qubo": 201229.0,
+      "time_sec": 0.748
+    },
+    {
+      "A": 200.0,
+      "T0": 20.0,
+      "seed": 20260726,
+      "n_unique": 145,
+      "n_feasible": 1,
+      "feas_rate": 0.006896551724137931,
+      "best_cost": 65.0,
+      "best_qubo": 267232.0,
+      "time_sec": 0.552
+    },
+    {
+      "A": 200.0,
+      "T0": 20.0,
+      "seed": 20260727,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 68.0,
+      "best_qubo": 267239.0,
+      "time_sec": 0.571
+    },
+    {
+      "A": 200.0,
+      "T0": 20.0,
+      "seed": 20260728,
+      "n_unique": 167,
+      "n_feasible": 1,
+      "feas_rate": 0.005988023952095809,
+      "best_cost": 63.0,
+      "best_qubo": 267227.0,
+      "time_sec": 0.549
+    },
+    {
+      "A": 200.0,
+      "T0": 50.0,
+      "seed": 20260736,
+      "n_unique": 156,
+      "n_feasible": 1,
+      "feas_rate": 0.00641025641025641,
+      "best_cost": 68.0,
+      "best_qubo": 267237.0,
+      "time_sec": 0.6
+    },
+    {
+      "A": 200.0,
+      "T0": 50.0,
+      "seed": 20260737,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 57.0,
+      "best_qubo": 267220.0,
+      "time_sec": 0.619
+    },
+    {
+      "A": 200.0,
+      "T0": 50.0,
+      "seed": 20260738,
+      "n_unique": 183,
+      "n_feasible": 1,
+      "feas_rate": 0.00546448087431694,
+      "best_cost": 67.0,
+      "best_qubo": 267235.0,
+      "time_sec": 0.632
+    },
+    {
+      "A": 200.0,
+      "T0": 100.0,
+      "seed": 20260746,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 74.0,
+      "best_qubo": 267250.0,
+      "time_sec": 0.655
+    },
+    {
+      "A": 200.0,
+      "T0": 100.0,
+      "seed": 20260747,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 64.0,
+      "best_qubo": 267230.0,
+      "time_sec": 0.618
+    },
+    {
+      "A": 200.0,
+      "T0": 100.0,
+      "seed": 20260748,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 62.0,
+      "best_qubo": 267227.0,
+      "time_sec": 0.627
+    },
+    {
+      "A": 200.0,
+      "T0": 200.0,
+      "seed": 20260756,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 64.0,
+      "best_qubo": 267231.0,
+      "time_sec": 0.668
+    },
+    {
+      "A": 200.0,
+      "T0": 200.0,
+      "seed": 20260757,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 59.0,
+      "best_qubo": 267218.0,
+      "time_sec": 0.699
+    },
+    {
+      "A": 200.0,
+      "T0": 200.0,
+      "seed": 20260758,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 57.0,
+      "best_qubo": 267217.0,
+      "time_sec": 0.675
+    },
+    {
+      "A": 200.0,
+      "T0": 500.0,
+      "seed": 20260766,
+      "n_unique": 200,
+      "n_feasible": 3,
+      "feas_rate": 0.015,
+      "best_cost": 59.0,
+      "best_qubo": 267222.0,
+      "time_sec": 0.748
+    },
+    {
+      "A": 200.0,
+      "T0": 500.0,
+      "seed": 20260767,
+      "n_unique": 200,
+      "n_feasible": 2,
+      "feas_rate": 0.01,
+      "best_cost": 53.0,
+      "best_qubo": 267207.0,
+      "time_sec": 0.753
+    },
+    {
+      "A": 200.0,
+      "T0": 500.0,
+      "seed": 20260768,
+      "n_unique": 200,
+      "n_feasible": 2,
+      "feas_rate": 0.01,
+      "best_cost": 67.0,
+      "best_qubo": 267235.0,
+      "time_sec": 0.764
+    },
+    {
+      "A": 300.0,
+      "T0": 20.0,
+      "seed": 20260826,
+      "n_unique": 189,
+      "n_feasible": 1,
+      "feas_rate": 0.005291005291005291,
+      "best_cost": 64.0,
+      "best_qubo": 399229.0,
+      "time_sec": 0.55
+    },
+    {
+      "A": 300.0,
+      "T0": 20.0,
+      "seed": 20260827,
+      "n_unique": 178,
+      "n_feasible": 1,
+      "feas_rate": 0.0056179775280898875,
+      "best_cost": 71.0,
+      "best_qubo": 399244.0,
+      "time_sec": 0.541
+    },
+    {
+      "A": 300.0,
+      "T0": 20.0,
+      "seed": 20260828,
+      "n_unique": 181,
+      "n_feasible": 1,
+      "feas_rate": 0.0055248618784530384,
+      "best_cost": 51.0,
+      "best_qubo": 399205.0,
+      "time_sec": 0.568
+    },
+    {
+      "A": 300.0,
+      "T0": 50.0,
+      "seed": 20260836,
+      "n_unique": 119,
+      "n_feasible": 1,
+      "feas_rate": 0.008403361344537815,
+      "best_cost": 68.0,
+      "best_qubo": 399239.0,
+      "time_sec": 0.626
+    },
+    {
+      "A": 300.0,
+      "T0": 50.0,
+      "seed": 20260837,
+      "n_unique": 168,
+      "n_feasible": 1,
+      "feas_rate": 0.005952380952380952,
+      "best_cost": 65.0,
+      "best_qubo": 399232.0,
+      "time_sec": 0.615
+    },
+    {
+      "A": 300.0,
+      "T0": 50.0,
+      "seed": 20260838,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 57.0,
+      "best_qubo": 399215.0,
+      "time_sec": 0.584
+    },
+    {
+      "A": 300.0,
+      "T0": 100.0,
+      "seed": 20260846,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 56.0,
+      "best_qubo": 399212.0,
+      "time_sec": 0.639
+    },
+    {
+      "A": 300.0,
+      "T0": 100.0,
+      "seed": 20260847,
+      "n_unique": 183,
+      "n_feasible": 1,
+      "feas_rate": 0.00546448087431694,
+      "best_cost": 69.0,
+      "best_qubo": 399240.0,
+      "time_sec": 0.644
+    },
+    {
+      "A": 300.0,
+      "T0": 100.0,
+      "seed": 20260848,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 64.0,
+      "best_qubo": 399229.0,
+      "time_sec": 0.637
+    },
+    {
+      "A": 300.0,
+      "T0": 200.0,
+      "seed": 20260856,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 66.0,
+      "best_qubo": 399234.0,
+      "time_sec": 0.681
+    },
+    {
+      "A": 300.0,
+      "T0": 200.0,
+      "seed": 20260857,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 64.0,
+      "best_qubo": 399233.0,
+      "time_sec": 0.689
+    },
+    {
+      "A": 300.0,
+      "T0": 200.0,
+      "seed": 20260858,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 61.0,
+      "best_qubo": 399226.0,
+      "time_sec": 0.697
+    },
+    {
+      "A": 300.0,
+      "T0": 500.0,
+      "seed": 20260866,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 59.0,
+      "best_qubo": 399221.0,
+      "time_sec": 0.737
+    },
+    {
+      "A": 300.0,
+      "T0": 500.0,
+      "seed": 20260867,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 54.0,
+      "best_qubo": 399211.0,
+      "time_sec": 0.765
+    },
+    {
+      "A": 300.0,
+      "T0": 500.0,
+      "seed": 20260868,
+      "n_unique": 200,
+      "n_feasible": 1,
+      "feas_rate": 0.005,
+      "best_cost": 64.0,
+      "best_qubo": 399230.0,
+      "time_sec": 0.745
+    }
+  ],
+  "total_time_sec": 51.0
+}

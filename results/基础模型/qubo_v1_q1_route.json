@@ -1,0 +1,253 @@
+{
+  "problem": "Q1: 单车辆 TSP（无时间窗、无容量）",
+  "n_customers": 15,
+  "n_qubo_vars": 225,
+  "penalty_A": 200.0,
+  "sa": {
+    "n_sweeps": 4000,
+    "n_restarts": 8,
+    "T_init": 50.0,
+    "T_final": 0.001,
+    "seed": 20260426,
+    "time_sec": 8.956,
+    "feasible": true,
+    "cost": 49.0,
+    "energy": 92.0,
+    "route": [
+      0,
+      4,
+      5,
+      6,
+      2,
+      15,
+      14,
+      1,
+      10,
+      11,
+      8,
+      13,
+      9,
+      12,
+      3,
+      7,
+      0
+    ]
+  },
+  "sa_plus_2opt": {
+    "two_opt_iters": 12,
+    "cost": 29.0,
+    "route": [
+      0,
+      13,
+      14,
+      15,
+      2,
+      4,
+      12,
+      3,
+      9,
+      1,
+      10,
+      11,
+      7,
+      8,
+      5,
+      6,
+      0
+    ]
+  },
+  "held_karp": {
+    "time_sec": 0.765,
+    "cost": 29.0,
+    "route": [
+      0,
+      13,
+      2,
+      15,
+      14,
+      6,
+      5,
+      8,
+      7,
+      11,
+      10,
+      1,
+      9,
+      3,
+      12,
+      4,
+      0
+    ]
+  },
+  "gap_sa_vs_exact_pct": 68.9655,
+  "gap_sa2opt_vs_exact_pct": 0.0,
+  "final": {
+    "source": "QUBO/SA + 2-opt 混合（附 Held-Karp 精确解对照）",
+    "route": [
+      0,
+      13,
+      14,
+      15,
+      2,
+      4,
+      12,
+      3,
+      9,
+      1,
+      10,
+      11,
+      7,
+      8,
+      5,
+      6,
+      0
+    ],
+    "total_travel_time": 29
+  },
+  "schedule": [
+    {
+      "step": 1,
+      "from_node": 0,
+      "to_node": 13,
+      "travel": 1,
+      "arrive": 1,
+      "service": 2,
+      "depart": 3
+    },
+    {
+      "step": 2,
+      "from_node": 13,
+      "to_node": 14,
+      "travel": 3,
+      "arrive": 6,
+      "service": 2,
+      "depart": 8
+    },
+    {
+      "step": 3,
+      "from_node": 14,
+      "to_node": 15,
+      "travel": 2,
+      "arrive": 10,
+      "service": 2,
+      "depart": 12
+    },
+    {
+      "step": 4,
+      "from_node": 15,
+      "to_node": 2,
+      "travel": 2,
+      "arrive": 14,
+      "service": 2,
+      "depart": 16
+    },
+    {
+      "step": 5,
+      "from_node": 2,
+      "to_node": 4,
+      "travel": 3,
+      "arrive": 19,
+      "service": 2,
+      "depart": 21
+    },
+    {
+      "step": 6,
+      "from_node": 4,
+      "to_node": 12,
+      "travel": 2,
+      "arrive": 23,
+      "service": 2,
+      "depart": 25
+    },
+    {
+      "step": 7,
+      "from_node": 12,
+      "to_node": 3,
+      "travel": 1,
+      "arrive": 26,
+      "service": 2,
+      "depart": 28
+    },
+    {
+      "step": 8,
+      "from_node": 3,
+      "to_node": 9,
+      "travel": 2,
+      "arrive": 30,
+      "service": 2,
+      "depart": 32
+    },
+    {
+      "step": 9,
+      "from_node": 9,
+      "to_node": 1,
+      "travel": 2,
+      "arrive": 34,
+      "service": 2,
+      "depart": 36
+    },
+    {
+      "step": 10,
+      "from_node": 1,
+      "to_node": 10,
+      "travel": 2,
+      "arrive": 38,
+      "service": 2,
+      "depart": 40
+    },
+    {
+      "step": 11,
+      "from_node": 10,
+      "to_node": 11,
+      "travel": 1,
+      "arrive": 41,
+      "service": 2,
+      "depart": 43
+    },
+    {
+      "step": 12,
+      "from_node": 11,
+      "to_node": 7,
+      "travel": 2,
+      "arrive": 45,
+      "service": 2,
+      "depart": 47
+    },
+    {
+      "step": 13,
+      "from_node": 7,
+      "to_node": 8,
+      "travel": 2,
+      "arrive": 49,
+      "service": 2,
+      "depart": 51
+    },
+    {
+      "step": 14,
+      "from_node": 8,
+      "to_node": 5,
+      "travel": 2,
+      "arrive": 53,
+      "service": 2,
+      "depart": 55
+    },
+    {
+      "step": 15,
+      "from_node": 5,
+      "to_node": 6,
+      "travel": 1,
+      "arrive": 56,
+      "service": 2,
+      "depart": 58
+    },
+    {
+      "step": 16,
+      "from_node": 6,
+      "to_node": 0,
+      "travel": 1,
+      "arrive": 59,
+      "service": 0,
+      "depart": 59
+    }
+  ]
+}
