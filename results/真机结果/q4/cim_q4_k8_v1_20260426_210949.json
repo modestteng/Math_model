@@ -1,0 +1,56 @@
+{
+  "name": "q4_k8_v1",
+  "cim_task_name": "q4_k8_v1_20260426_210949",
+  "cim_machine": "CPQC-550",
+  "cim_solve_time_sec": 61.84,
+  "cim_sample_number": 10,
+  "n_qubo_vars": 25,
+  "n_ising_spins": 26,
+  "bit_width_8_applied": true,
+  "n_total_samples": 10,
+  "n_feasible": 1,
+  "feasibility_rate": 0.1,
+  "hamiltonian_values": [
+    2966.0,
+    2802.0,
+    2802.0,
+    2798.0,
+    2626.0,
+    2302.0,
+    2302.0,
+    2138.0,
+    -4142.0,
+    -4646.0
+  ],
+  "min_hamiltonian": -4646.0,
+  "max_hamiltonian": 2966.0,
+  "timestamp": "20260426_210949",
+  "vehicle_idx": 1,
+  "customers_in": [
+    27,
+    2,
+    40,
+    3,
+    50
+  ],
+  "best_seg_after_polish": [
+    27,
+    2,
+    40,
+    3,
+    50
+  ],
+  "best_route_with_depot": [
+    0,
+    27,
+    2,
+    40,
+    3,
+    50,
+    0
+  ],
+  "seg_travel": 11.0,
+  "seg_penalty": 0.0,
+  "seg_cost": 11.0,
+  "seg_demand": 34.0
+}

@@ -1,0 +1,353 @@
+{
+  "timestamp": "20260426_212139",
+  "user_id": "147786085198512130",
+  "scheme": "K=8_blockdiag",
+  "cim_machine": "CPQC-550",
+  "cim_task_name": "q4_k8_blockdiag_20260426_212139",
+  "cim_solve_time_sec": 62.29,
+  "cim_sample_number": 10,
+  "cim_quota_consumed": 1,
+  "n_qubo_vars_combined": 297,
+  "n_ising_spins": 298,
+  "bit_width_8_applied": true,
+  "n_total_samples": 10,
+  "hamiltonian_total": [
+    28012.0,
+    27948.0,
+    27932.0,
+    27916.0,
+    27876.0,
+    27860.0,
+    27816.0,
+    27812.0,
+    27792.0,
+    27756.0
+  ],
+  "min_hamiltonian_total": 27756.0,
+  "max_hamiltonian_total": 28012.0,
+  "py_baseline": {
+    "travel": 114.0,
+    "penalty": 10.0,
+    "J_inner": 124.0,
+    "obj_M": 8124.0
+  },
+  "cim_summary": {
+    "travel": 121.0,
+    "penalty": 200.0,
+    "J_inner": 321.0,
+    "obj_M": 8321.0,
+    "gap_to_py": 197.0
+  },
+  "segments": [
+    {
+      "v_idx": 1,
+      "n_sub": 25,
+      "nvar_block": 25,
+      "offset": -1,
+      "n_feasible": 1,
+      "feasibility_rate": 0.1,
+      "customers_in": [
+        27,
+        2,
+        40,
+        3,
+        50
+      ],
+      "best_seg_after_polish": [
+        27,
+        2,
+        40,
+        3,
+        50
+      ],
+      "best_route_with_depot": [
+        0,
+        27,
+        2,
+        40,
+        3,
+        50,
+        0
+      ],
+      "seg_travel": 11.0,
+      "seg_penalty": 0.0,
+      "seg_cost": 11.0,
+      "seg_demand": 34.0
+    },
+    {
+      "v_idx": 2,
+      "n_sub": 7,
+      "nvar_block": 49,
+      "offset": 0,
+      "n_feasible": 10,
+      "feasibility_rate": 1.0,
+      "customers_in": [
+        31,
+        30,
+        35,
+        34,
+        9,
+        20,
+        32
+      ],
+      "best_seg_after_polish": [
+        31,
+        9,
+        34,
+        30,
+        32,
+        20,
+        35
+      ],
+      "best_route_with_depot": [
+        0,
+        31,
+        9,
+        34,
+        30,
+        32,
+        20,
+        35,
+        0
+      ],
+      "seg_travel": 18.0,
+      "seg_penalty": 200.0,
+      "seg_cost": 218.0,
+      "seg_demand": 42.0
+    },
+    {
+      "v_idx": 3,
+      "n_sub": 7,
+      "nvar_block": 49,
+      "offset": 49,
+      "n_feasible": 7,
+      "feasibility_rate": 0.7,
+      "customers_in": [
+        15,
+        42,
+        16,
+        44,
+        37,
+        6,
+        48
+      ],
+      "best_seg_after_polish": [
+        15,
+        42,
+        16,
+        44,
+        37,
+        6,
+        48
+      ],
+      "best_route_with_depot": [
+        0,
+        15,
+        42,
+        16,
+        44,
+        37,
+        6,
+        48,
+        0
+      ],
+      "seg_travel": 17.0,
+      "seg_penalty": 0.0,
+      "seg_cost": 17.0,
+      "seg_demand": 38.0
+    },
+    {
+      "v_idx": 4,
+      "n_sub": 6,
+      "nvar_block": 36,
+      "offset": 98,
+      "n_feasible": 1,
+      "feasibility_rate": 0.1,
+      "customers_in": [
+        11,
+        19,
+        47,
+        49,
+        10,
+        1
+      ],
+      "best_seg_after_polish": [
+        11,
+        19,
+        47,
+        49,
+        10,
+        1
+      ],
+      "best_route_with_depot": [
+        0,
+        11,
+        19,
+        47,
+        49,
+        10,
+        1,
+        0
+      ],
+      "seg_travel": 15.0,
+      "seg_penalty": 0.0,
+      "seg_cost": 15.0,
+      "seg_demand": 38.0
+    },
+    {
+      "v_idx": 5,
+      "n_sub": 8,
+      "nvar_block": 64,
+      "offset": 134,
+      "n_feasible": 4,
+      "feasibility_rate": 0.4,
+      "customers_in": [
+        28,
+        21,
+        41,
+        22,
+        23,
+        39,
+        25,
+        4
+      ],
+      "best_seg_after_polish": [
+        28,
+        21,
+        41,
+        22,
+        23,
+        39,
+        25,
+        4
+      ],
+      "best_route_with_depot": [
+        0,
+        28,
+        21,
+        41,
+        22,
+        23,
+        39,
+        25,
+        4,
+        0
+      ],
+      "seg_travel": 13.0,
+      "seg_penalty": 0.0,
+      "seg_cost": 13.0,
+      "seg_demand": 35.0
+    },
+    {
+      "v_idx": 6,
+      "n_sub": 5,
+      "nvar_block": 25,
+      "offset": 198,
+      "n_feasible": 10,
+      "feasibility_rate": 1.0,
+      "customers_in": [
+        33,
+        29,
+        12,
+        24,
+        26
+      ],
+      "best_seg_after_polish": [
+        33,
+        12,
+        29,
+        26,
+        24
+      ],
+      "best_route_with_depot": [
+        0,
+        33,
+        12,
+        29,
+        26,
+        24,
+        0
+      ],
+      "seg_travel": 17.0,
+      "seg_penalty": 0.0,
+      "seg_cost": 17.0,
+      "seg_demand": 26.0
+    },
+    {
+      "v_idx": 7,
+      "n_sub": 7,
+      "nvar_block": 49,
+      "offset": 223,
+      "n_feasible": 10,
+      "feasibility_rate": 1.0,
+      "customers_in": [
+        36,
+        7,
+        18,
+        8,
+        46,
+        45,
+        17
+      ],
+      "best_seg_after_polish": [
+        36,
+        7,
+        18,
+        8,
+        46,
+        45,
+        17
+      ],
+      "best_route_with_depot": [
+        0,
+        36,
+        7,
+        18,
+        8,
+        46,
+        45,
+        17,
+        0
+      ],
+      "seg_travel": 17.0,
+      "seg_penalty": 0.0,
+      "seg_cost": 17.0,
+      "seg_demand": 30.0
+    },
+    {
+      "v_idx": 8,
+      "n_sub": 5,
+      "nvar_block": 25,
+      "offset": 272,
+      "n_feasible": 10,
+      "feasibility_rate": 1.0,
+      "customers_in": [
+        5,
+        38,
+        14,
+        43,
+        13
+      ],
+      "best_seg_after_polish": [
+        5,
+        14,
+        38,
+        43,
+        13
+      ],
+      "best_route_with_depot": [
+        0,
+        5,
+        14,
+        38,
+        43,
+        13,
+        0
+      ],
+      "seg_travel": 13.0,
+      "seg_penalty": 0.0,
+      "seg_cost": 13.0,
+      "seg_demand": 28.0
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "problem": "Q3 · n=50 第 1 段（17 客户 子 QUBO 289 比特）",
+  "cim_task_name": "q3_seg1_20260426_195103",
+  "cim_machine": "CPQC-550",
+  "cim_submit_time": "2026-04-26 19:54:12",
+  "cim_complete_time": "未知（脚本 kill 时还在 'still processing'）",
+  "cim_sample_number": 10,
+  "n_qubo_vars": 289,
+  "n_ising_spins": 290,
+  "bit_width_8_applied": true,
+  "n_feasible": "未知（脚本 kill 时未取回）",
+  "status": "quota_consumed_but_result_lost",
+  "note": "task 已提交 CIM 服务端（配额已扣 1 次），但 Python 脚本因配额提示被 kill，wait=True 阻塞过程中断；CIM 任务结果在服务器队列中可能仍在或已完成，可通过 task_name='q3_seg1_20260426_195103' 在 Kaiwu 平台 https://platform.qboson.com 查询历史任务。本次实验视为该子 QUBO 配额消耗但结果丢失。",
+  "recovery_action_required": "登录 platform.qboson.com → 任务列表 → 找 q3_seg1_20260426_195103 → 若状态=completed 可下载 spin 文件手动解码；否则视作浪费配额。"
+}

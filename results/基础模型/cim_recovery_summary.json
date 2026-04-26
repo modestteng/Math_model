@@ -1,0 +1,23 @@
+{
+  "timestamp": "20260426_195103",
+  "cim_attempts": [
+    {
+      "name": "q1_n15",
+      "status": "✓ 完成并已抢救",
+      "best": "travel=31"
+    },
+    {
+      "name": "q2_n15",
+      "status": "✓ 完成并已抢救",
+      "best": "J=84121 (与 Python 一致)"
+    },
+    {
+      "name": "q3_seg1",
+      "status": "✗ 配额已扣但结果丢失",
+      "action": "可去 platform.qboson.com 查"
+    }
+  ],
+  "quota_consumed": 3,
+  "quota_remaining_estimate": "6 - 3 = 3",
+  "next_steps": "用剩余 3 次配额跑：① Q3-seg2 ② Q3-seg3 ③ Q4 任选 1 车（推荐 q4_v3 = 64 比特最大）"
+}

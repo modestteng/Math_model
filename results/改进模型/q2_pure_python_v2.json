@@ -1,0 +1,276 @@
+{
+  "problem": "Q2 v2: 单车辆 + 时间窗惩罚（无容量），纯 Python · 强化求解器",
+  "method": "Multi-start polish + 3-opt 精修",
+  "n_customers": 15,
+  "M1": 10.0,
+  "M2": 20.0,
+  "seeds": [
+    20260426,
+    20260426,
+    20260427,
+    20260428
+  ],
+  "time_sec": {
+    "polish": 0.69,
+    "lns": 1.662,
+    "sa": 53.419,
+    "total": 55.771
+  },
+  "final": {
+    "route": [
+      0,
+      2,
+      13,
+      6,
+      5,
+      8,
+      7,
+      11,
+      10,
+      1,
+      9,
+      3,
+      12,
+      4,
+      15,
+      14,
+      0
+    ],
+    "perm": [
+      2,
+      13,
+      6,
+      5,
+      8,
+      7,
+      11,
+      10,
+      1,
+      9,
+      3,
+      12,
+      4,
+      15,
+      14
+    ],
+    "total_travel_time": 31.0,
+    "total_tw_penalty": 84090.0,
+    "objective_J": 84121.0
+  },
+  "schedule": [
+    {
+      "customer": 2,
+      "arrive": 2.0,
+      "tw_a": 3.0,
+      "tw_b": 12.0,
+      "early": 1.0,
+      "late": 0.0,
+      "penalty": 10.0,
+      "service": 2.0,
+      "depart": 4.0
+    },
+    {
+      "customer": 13,
+      "arrive": 5.0,
+      "tw_a": 9.0,
+      "tw_b": 27.0,
+      "early": 4.0,
+      "late": 0.0,
+      "penalty": 160.0,
+      "service": 2.0,
+      "depart": 7.0
+    },
+    {
+      "customer": 6,
+      "arrive": 8.0,
+      "tw_a": 7.0,
+      "tw_b": 20.0,
+      "early": 0.0,
+      "late": 0.0,
+      "penalty": 0.0,
+      "service": 2.0,
+      "depart": 10.0
+    },
+    {
+      "customer": 5,
+      "arrive": 11.0,
+      "tw_a": 3.0,
+      "tw_b": 14.0,
+      "early": 0.0,
+      "late": 0.0,
+      "penalty": 0.0,
+      "service": 2.0,
+      "depart": 13.0
+    },
+    {
+      "customer": 8,
+      "arrive": 15.0,
+      "tw_a": 8.0,
+      "tw_b": 18.0,
+      "early": 0.0,
+      "late": 0.0,
+      "penalty": 0.0,
+      "service": 2.0,
+      "depart": 17.0
+    },
+    {
+      "customer": 7,
+      "arrive": 19.0,
+      "tw_a": 9.0,
+      "tw_b": 14.0,
+      "early": 0.0,
+      "late": 5.0,
+      "penalty": 500.0,
+      "service": 2.0,
+      "depart": 21.0
+    },
+    {
+      "customer": 11,
+      "arrive": 23.0,
+      "tw_a": 4.0,
+      "tw_b": 20.0,
+      "early": 0.0,
+      "late": 3.0,
+      "penalty": 180.0,
+      "service": 2.0,
+      "depart": 25.0
+    },
+    {
+      "customer": 10,
+      "arrive": 26.0,
+      "tw_a": 13.0,
+      "tw_b": 20.0,
+      "early": 0.0,
+      "late": 6.0,
+      "penalty": 720.0,
+      "service": 2.0,
+      "depart": 28.0
+    },
+    {
+      "customer": 1,
+      "arrive": 30.0,
+      "tw_a": 17.0,
+      "tw_b": 26.0,
+      "early": 0.0,
+      "late": 4.0,
+      "penalty": 320.0,
+      "service": 2.0,
+      "depart": 32.0
+    },
+    {
+      "customer": 9,
+      "arrive": 34.0,
+      "tw_a": 7.0,
+      "tw_b": 20.0,
+      "early": 0.0,
+      "late": 14.0,
+      "penalty": 3920.0,
+      "service": 2.0,
+      "depart": 36.0
+    },
+    {
+      "customer": 3,
+      "arrive": 38.0,
+      "tw_a": 14.0,
+      "tw_b": 18.0,
+      "early": 0.0,
+      "late": 20.0,
+      "penalty": 8000.0,
+      "service": 2.0,
+      "depart": 40.0
+    },
+    {
+      "customer": 12,
+      "arrive": 41.0,
+      "tw_a": 5.0,
+      "tw_b": 13.0,
+      "early": 0.0,
+      "late": 28.0,
+      "penalty": 15680.0,
+      "service": 2.0,
+      "depart": 43.0
+    },
+    {
+      "customer": 4,
+      "arrive": 45.0,
+      "tw_a": 9.0,
+      "tw_b": 25.0,
+      "early": 0.0,
+      "late": 20.0,
+      "penalty": 8000.0,
+      "service": 2.0,
+      "depart": 47.0
+    },
+    {
+      "customer": 15,
+      "arrive": 51.0,
+      "tw_a": 4.0,
+      "tw_b": 20.0,
+      "early": 0.0,
+      "late": 31.0,
+      "penalty": 19220.0,
+      "service": 2.0,
+      "depart": 53.0
+    },
+    {
+      "customer": 14,
+      "arrive": 55.0,
+      "tw_a": 4.0,
+      "tw_b": 18.0,
+      "early": 0.0,
+      "late": 37.0,
+      "penalty": 27380.0,
+      "service": 2.0,
+      "depart": 57.0
+    }
+  ],
+  "topk_polish_J": [
+    84121.0,
+    86251.0,
+    86251.0,
+    86251.0,
+    86251.0
+  ],
+  "sa_pool": [
+    {
+      "seed": 20260426,
+      "J": 84121.0
+    },
+    {
+      "seed": 20260427,
+      "J": 84121.0
+    },
+    {
+      "seed": 20260428,
+      "J": 84121.0
+    }
+  ],
+  "v1_baseline": {
+    "J": 84121.0,
+    "travel": 31.0,
+    "penalty": 84090.0,
+    "route": [
+      0,
+      2,
+      13,
+      6,
+      5,
+      8,
+      7,
+      11,
+      10,
+      1,
+      9,
+      3,
+      12,
+      4,
+      15,
+      14,
+      0
+    ]
+  },
+  "improvement_vs_v1": {
+    "delta_J": 0.0,
+    "relative_pct": 0.0
+  }
+}

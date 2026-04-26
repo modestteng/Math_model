@@ -1,0 +1,1117 @@
+{
+  "problem": "Q4 · Kaiwu SDK 验证（每车一子 TSP QUBO，真机兼容）",
+  "kaiwu_version": "1.3.1",
+  "n_customers": 50,
+  "K": 7,
+  "capacity": 60,
+  "sub_qubo_bits_max": 64,
+  "cim_qubit_limit": 550,
+  "decomposition": "per-vehicle sub-TSP QUBO",
+  "encoding": "one-hot 位置编码 + 解码后时间窗评估（同 Q2/Q3 方案 C）",
+  "backend": "sdk_sa",
+  "backend_swap_to_cim_supported": true,
+  "bit_width_8_applied": true,
+  "A_pen": 200.0,
+  "M1": 10.0,
+  "M2": 20.0,
+  "M_vehicle": 1000.0,
+  "sub_problems": [
+    {
+      "vehicle": 1,
+      "n_sub": 7,
+      "sub_qubo_bits": 49,
+      "customers_in": [
+        15,
+        2,
+        21,
+        40,
+        6,
+        37,
+        17
+      ],
+      "n_candidates": 150,
+      "n_feasible": 8,
+      "time_sec": 0.508,
+      "cost_before": 17.0,
+      "cost_after": 17.0,
+      "travel_after": 17.0,
+      "pen_after": 0.0,
+      "seeds": [
+        20260426,
+        20260427,
+        20260428
+      ]
+    },
+    {
+      "vehicle": 2,
+      "n_sub": 7,
+      "sub_qubo_bits": 49,
+      "customers_in": [
+        31,
+        30,
+        9,
+        34,
+        35,
+        20,
+        32
+      ],
+      "n_candidates": 150,
+      "n_feasible": 4,
+      "time_sec": 0.558,
+      "cost_before": 25.0,
+      "cost_after": 25.0,
+      "travel_after": 15.0,
+      "pen_after": 10.0,
+      "seeds": [
+        20260439,
+        20260440,
+        20260441
+      ]
+    },
+    {
+      "vehicle": 3,
+      "n_sub": 8,
+      "sub_qubo_bits": 64,
+      "customers_in": [
+        27,
+        16,
+        44,
+        38,
+        14,
+        43,
+        42,
+        13
+      ],
+      "n_candidates": 150,
+      "n_feasible": 4,
+      "time_sec": 0.538,
+      "cost_before": 13.0,
+      "cost_after": 13.0,
+      "travel_after": 13.0,
+      "pen_after": 0.0,
+      "seeds": [
+        20260452,
+        20260453,
+        20260454
+      ]
+    },
+    {
+      "vehicle": 4,
+      "n_sub": 7,
+      "sub_qubo_bits": 49,
+      "customers_in": [
+        47,
+        19,
+        36,
+        49,
+        11,
+        10,
+        1
+      ],
+      "n_candidates": 150,
+      "n_feasible": 4,
+      "time_sec": 0.573,
+      "cost_before": 35.0,
+      "cost_after": 35.0,
+      "travel_after": 15.0,
+      "pen_after": 20.0,
+      "seeds": [
+        20260465,
+        20260466,
+        20260467
+      ]
+    },
+    {
+      "vehicle": 5,
+      "n_sub": 7,
+      "sub_qubo_bits": 49,
+      "customers_in": [
+        33,
+        25,
+        39,
+        23,
+        22,
+        41,
+        4
+      ],
+      "n_candidates": 150,
+      "n_feasible": 4,
+      "time_sec": 0.472,
+      "cost_before": 16.0,
+      "cost_after": 16.0,
+      "travel_after": 16.0,
+      "pen_after": 0.0,
+      "seeds": [
+        20260478,
+        20260479,
+        20260480
+      ]
+    },
+    {
+      "vehicle": 6,
+      "n_sub": 7,
+      "sub_qubo_bits": 49,
+      "customers_in": [
+        28,
+        29,
+        12,
+        3,
+        50,
+        26,
+        24
+      ],
+      "n_candidates": 150,
+      "n_feasible": 3,
+      "time_sec": 0.558,
+      "cost_before": 27.0,
+      "cost_after": 27.0,
+      "travel_after": 17.0,
+      "pen_after": 10.0,
+      "seeds": [
+        20260491,
+        20260492,
+        20260493
+      ]
+    },
+    {
+      "vehicle": 7,
+      "n_sub": 7,
+      "sub_qubo_bits": 49,
+      "customers_in": [
+        5,
+        45,
+        7,
+        18,
+        8,
+        46,
+        48
+      ],
+      "n_candidates": 150,
+      "n_feasible": 3,
+      "time_sec": 0.485,
+      "cost_before": 16.0,
+      "cost_after": 16.0,
+      "travel_after": 16.0,
+      "pen_after": 0.0,
+      "seeds": [
+        20260504,
+        20260505,
+        20260506
+      ]
+    }
+  ],
+  "time_sec": 3.768,
+  "final": {
+    "routes": [
+      [
+        0,
+        15,
+        2,
+        21,
+        40,
+        6,
+        37,
+        17,
+        0
+      ],
+      [
+        0,
+        31,
+        30,
+        9,
+        34,
+        35,
+        20,
+        32,
+        0
+      ],
+      [
+        0,
+        27,
+        16,
+        44,
+        38,
+        14,
+        43,
+        42,
+        13,
+        0
+      ],
+      [
+        0,
+        47,
+        19,
+        36,
+        49,
+        11,
+        10,
+        1,
+        0
+      ],
+      [
+        0,
+        33,
+        25,
+        39,
+        23,
+        22,
+        41,
+        4,
+        0
+      ],
+      [
+        0,
+        28,
+        29,
+        12,
+        3,
+        50,
+        26,
+        24,
+        0
+      ],
+      [
+        0,
+        5,
+        45,
+        7,
+        18,
+        8,
+        46,
+        48,
+        0
+      ]
+    ],
+    "travel": 109.0,
+    "penalty": 40.0,
+    "J_inner": 149.0,
+    "obj_M": 7149.0,
+    "n_violators": 3
+  },
+  "per_vehicle": [
+    {
+      "vehicle": 1,
+      "route": [
+        0,
+        15,
+        2,
+        21,
+        40,
+        6,
+        37,
+        17,
+        0
+      ],
+      "travel": 17.0,
+      "penalty": 0.0,
+      "demand": 35.0,
+      "schedule": [
+        {
+          "customer": 15,
+          "arrive": 4.0,
+          "tw_a": 4.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 6.0,
+          "demand": 4.0
+        },
+        {
+          "customer": 2,
+          "arrive": 8.0,
+          "tw_a": 3.0,
+          "tw_b": 12.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 10.0,
+          "demand": 4.0
+        },
+        {
+          "customer": 21,
+          "arrive": 11.0,
+          "tw_a": 5.0,
+          "tw_b": 13.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 13.0,
+          "demand": 2.0
+        },
+        {
+          "customer": 40,
+          "arrive": 14.0,
+          "tw_a": 7.0,
+          "tw_b": 17.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 16.0,
+          "demand": 8.0
+        },
+        {
+          "customer": 6,
+          "arrive": 18.0,
+          "tw_a": 7.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 20.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 37,
+          "arrive": 21.0,
+          "tw_a": 15.0,
+          "tw_b": 21.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 23.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 17,
+          "arrive": 25.0,
+          "tw_a": 7.0,
+          "tw_b": 25.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 27.0,
+          "demand": 7.0
+        }
+      ]
+    },
+    {
+      "vehicle": 2,
+      "route": [
+        0,
+        31,
+        30,
+        9,
+        34,
+        35,
+        20,
+        32,
+        0
+      ],
+      "travel": 15.0,
+      "penalty": 10.0,
+      "demand": 42.0,
+      "schedule": [
+        {
+          "customer": 31,
+          "arrive": 2.0,
+          "tw_a": 3.0,
+          "tw_b": 11.0,
+          "early": 1.0,
+          "late": 0.0,
+          "penalty": 10.0,
+          "service": 2.0,
+          "depart": 4.0,
+          "demand": 9.0
+        },
+        {
+          "customer": 30,
+          "arrive": 6.0,
+          "tw_a": 4.0,
+          "tw_b": 16.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 8.0,
+          "demand": 8.0
+        },
+        {
+          "customer": 9,
+          "arrive": 10.0,
+          "tw_a": 7.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 12.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 34,
+          "arrive": 13.0,
+          "tw_a": 13.0,
+          "tw_b": 19.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 15.0,
+          "demand": 5.0
+        },
+        {
+          "customer": 35,
+          "arrive": 16.0,
+          "tw_a": 7.0,
+          "tw_b": 23.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 18.0,
+          "demand": 4.0
+        },
+        {
+          "customer": 20,
+          "arrive": 20.0,
+          "tw_a": 14.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 22.0,
+          "demand": 6.0
+        },
+        {
+          "customer": 32,
+          "arrive": 23.0,
+          "tw_a": 15.0,
+          "tw_b": 23.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 25.0,
+          "demand": 7.0
+        }
+      ]
+    },
+    {
+      "vehicle": 3,
+      "route": [
+        0,
+        27,
+        16,
+        44,
+        38,
+        14,
+        43,
+        42,
+        13,
+        0
+      ],
+      "travel": 13.0,
+      "penalty": 0.0,
+      "demand": 47.0,
+      "schedule": [
+        {
+          "customer": 27,
+          "arrive": 1.0,
+          "tw_a": 1.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 3.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 16,
+          "arrive": 7.0,
+          "tw_a": 7.0,
+          "tw_b": 14.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 9.0,
+          "demand": 5.0
+        },
+        {
+          "customer": 44,
+          "arrive": 10.0,
+          "tw_a": 4.0,
+          "tw_b": 18.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 12.0,
+          "demand": 5.0
+        },
+        {
+          "customer": 38,
+          "arrive": 13.0,
+          "tw_a": 5.0,
+          "tw_b": 19.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 15.0,
+          "demand": 5.0
+        },
+        {
+          "customer": 14,
+          "arrive": 16.0,
+          "tw_a": 4.0,
+          "tw_b": 18.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 18.0,
+          "demand": 6.0
+        },
+        {
+          "customer": 43,
+          "arrive": 19.0,
+          "tw_a": 15.0,
+          "tw_b": 21.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 21.0,
+          "demand": 6.0
+        },
+        {
+          "customer": 42,
+          "arrive": 22.0,
+          "tw_a": 3.0,
+          "tw_b": 22.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 24.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 13,
+          "arrive": 26.0,
+          "tw_a": 9.0,
+          "tw_b": 27.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 28.0,
+          "demand": 6.0
+        }
+      ]
+    },
+    {
+      "vehicle": 4,
+      "route": [
+        0,
+        47,
+        19,
+        36,
+        49,
+        11,
+        10,
+        1,
+        0
+      ],
+      "travel": 15.0,
+      "penalty": 20.0,
+      "demand": 41.0,
+      "schedule": [
+        {
+          "customer": 47,
+          "arrive": 4.0,
+          "tw_a": 4.0,
+          "tw_b": 15.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 6.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 19,
+          "arrive": 7.0,
+          "tw_a": 7.0,
+          "tw_b": 14.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 9.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 36,
+          "arrive": 11.0,
+          "tw_a": 5.0,
+          "tw_b": 23.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 13.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 49,
+          "arrive": 14.0,
+          "tw_a": 12.0,
+          "tw_b": 17.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 16.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 11,
+          "arrive": 18.0,
+          "tw_a": 4.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 20.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 10,
+          "arrive": 21.0,
+          "tw_a": 13.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 1.0,
+          "penalty": 20.0,
+          "service": 2.0,
+          "depart": 23.0,
+          "demand": 8.0
+        },
+        {
+          "customer": 1,
+          "arrive": 25.0,
+          "tw_a": 17.0,
+          "tw_b": 26.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 27.0,
+          "demand": 6.0
+        }
+      ]
+    },
+    {
+      "vehicle": 5,
+      "route": [
+        0,
+        33,
+        25,
+        39,
+        23,
+        22,
+        41,
+        4,
+        0
+      ],
+      "travel": 16.0,
+      "penalty": 0.0,
+      "demand": 35.0,
+      "schedule": [
+        {
+          "customer": 33,
+          "arrive": 3.0,
+          "tw_a": 3.0,
+          "tw_b": 23.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 5.0,
+          "demand": 6.0
+        },
+        {
+          "customer": 25,
+          "arrive": 9.0,
+          "tw_a": 6.0,
+          "tw_b": 24.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 11.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 39,
+          "arrive": 12.0,
+          "tw_a": 4.0,
+          "tw_b": 24.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 14.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 23,
+          "arrive": 15.0,
+          "tw_a": 5.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 17.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 22,
+          "arrive": 18.0,
+          "tw_a": 8.0,
+          "tw_b": 19.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 20.0,
+          "demand": 4.0
+        },
+        {
+          "customer": 41,
+          "arrive": 21.0,
+          "tw_a": 6.0,
+          "tw_b": 21.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 23.0,
+          "demand": 9.0
+        },
+        {
+          "customer": 4,
+          "arrive": 25.0,
+          "tw_a": 9.0,
+          "tw_b": 25.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 27.0,
+          "demand": 3.0
+        }
+      ]
+    },
+    {
+      "vehicle": 6,
+      "route": [
+        0,
+        28,
+        29,
+        12,
+        3,
+        50,
+        26,
+        24,
+        0
+      ],
+      "travel": 17.0,
+      "penalty": 10.0,
+      "demand": 39.0,
+      "schedule": [
+        {
+          "customer": 28,
+          "arrive": 1.0,
+          "tw_a": 1.0,
+          "tw_b": 10.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 3.0,
+          "demand": 4.0
+        },
+        {
+          "customer": 29,
+          "arrive": 6.0,
+          "tw_a": 5.0,
+          "tw_b": 13.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 8.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 12,
+          "arrive": 10.0,
+          "tw_a": 5.0,
+          "tw_b": 13.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 12.0,
+          "demand": 5.0
+        },
+        {
+          "customer": 3,
+          "arrive": 13.0,
+          "tw_a": 14.0,
+          "tw_b": 18.0,
+          "early": 1.0,
+          "late": 0.0,
+          "penalty": 10.0,
+          "service": 2.0,
+          "depart": 15.0,
+          "demand": 7.0
+        },
+        {
+          "customer": 50,
+          "arrive": 16.0,
+          "tw_a": 14.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 18.0,
+          "demand": 8.0
+        },
+        {
+          "customer": 26,
+          "arrive": 20.0,
+          "tw_a": 15.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 22.0,
+          "demand": 6.0
+        },
+        {
+          "customer": 24,
+          "arrive": 25.0,
+          "tw_a": 15.0,
+          "tw_b": 25.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 27.0,
+          "demand": 6.0
+        }
+      ]
+    },
+    {
+      "vehicle": 7,
+      "route": [
+        0,
+        5,
+        45,
+        7,
+        18,
+        8,
+        46,
+        48,
+        0
+      ],
+      "travel": 16.0,
+      "penalty": 0.0,
+      "demand": 32.0,
+      "schedule": [
+        {
+          "customer": 5,
+          "arrive": 3.0,
+          "tw_a": 3.0,
+          "tw_b": 14.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 5.0,
+          "demand": 5.0
+        },
+        {
+          "customer": 45,
+          "arrive": 7.0,
+          "tw_a": 4.0,
+          "tw_b": 25.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 9.0,
+          "demand": 4.0
+        },
+        {
+          "customer": 7,
+          "arrive": 11.0,
+          "tw_a": 9.0,
+          "tw_b": 14.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 13.0,
+          "demand": 6.0
+        },
+        {
+          "customer": 18,
+          "arrive": 14.0,
+          "tw_a": 10.0,
+          "tw_b": 14.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 16.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 8,
+          "arrive": 17.0,
+          "tw_a": 8.0,
+          "tw_b": 18.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 19.0,
+          "demand": 4.0
+        },
+        {
+          "customer": 46,
+          "arrive": 20.0,
+          "tw_a": 12.0,
+          "tw_b": 20.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 22.0,
+          "demand": 3.0
+        },
+        {
+          "customer": 48,
+          "arrive": 24.0,
+          "tw_a": 16.0,
+          "tw_b": 25.0,
+          "early": 0.0,
+          "late": 0.0,
+          "penalty": 0.0,
+          "service": 2.0,
+          "depart": 26.0,
+          "demand": 7.0
+        }
+      ]
+    }
+  ],
+  "comparison": {
+    "pure_python_baseline": {
+      "travel": 109.0,
+      "penalty": 40.0,
+      "obj_M": 7149.0,
+      "routes": [
+        [
+          0,
+          15,
+          2,
+          21,
+          40,
+          6,
+          37,
+          17,
+          0
+        ],
+        [
+          0,
+          31,
+          30,
+          9,
+          34,
+          35,
+          20,
+          32,
+          0
+        ],
+        [
+          0,
+          27,
+          16,
+          44,
+          38,
+          14,
+          43,
+          42,
+          13,
+          0
+        ],
+        [
+          0,
+          47,
+          19,
+          36,
+          49,
+          11,
+          10,
+          1,
+          0
+        ],
+        [
+          0,
+          33,
+          25,
+          39,
+          23,
+          22,
+          41,
+          4,
+          0
+        ],
+        [
+          0,
+          28,
+          29,
+          12,
+          3,
+          50,
+          26,
+          24,
+          0
+        ],
+        [
+          0,
+          5,
+          45,
+          7,
+          18,
+          8,
+          46,
+          48,
+          0
+        ]
+      ]
+    },
+    "delta_obj_M": 0.0,
+    "same_or_better": true
+  },
+  "note": "每辆车一个子 TSP QUBO，最大 ≤81 比特 ≤550 真机上限；8-bit 精度调整已应用；通过 backend='sdk_sa' → 'cim' 单行切换可迁到真机。"
+}

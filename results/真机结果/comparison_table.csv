@@ -1,0 +1,14 @@
+﻿problem,method,description,n_qubo_vars,feasibility_rate,travel,penalty,J,time_sec,feasibility,note
+Q1,纯 Python (Held-Karp 精确),DP O(2^n n^2) 精确求解,,1.0,29.0,,29.0,0.05,100%（精确）,全局最优
+Q1,Kaiwu SDK SA tuned,经典模拟退火，5 seeds × 200 chains,225,0.006,29.0,,29.0,3.989,6/1000 = 0.6%,tuned + polish 后达到全局最优
+Q1,"Kaiwu CIM 真机 (R-Q1-004, 16:59)","CPQC-550, sample_number=10, 8-bit 精度",225,0.1,31.0,,31.0,61.99,1/10 = 10%,真机原始 cost=69 → polish 31，差全局最优 +2 (6.9%)
+Q1,"Kaiwu CIM 真机 (R-Q1-005, 19:51)","CPQC-550, sample_number=10（重测）",225,0.1,31.0,,31.0,63.4,1/10 = 10%,重测一致：travel=31，可行率 10% 与首次相同
+Q2,纯 Python LNS+SA,多起点 polish + LNS + 多 seed SA,,1.0,31.0,84090.0,84121.0,85.0,100%,基线（接近全局最优，跨算法稳健）
+Q2,Kaiwu SDK SA,经典 SA，方案 C：one-hot+距离，TW 解码后评估,225,0.006,31.0,84090.0,84121.0,3.84,6/1000 = 0.6%,对所有可行解 polish 后取最优，与 Python 完全一致
+Q2,"Kaiwu CIM 真机 (R-Q2-006, 19:52)","CPQC-550, sample_number=10",225,0.1,31.0,84090.0,84121.0,122.3,1/10 = 10%,与 Python 完全一致（J=84121 跨方法收敛）⭐
+Q3,纯 Python LNS,多起点 polish + LNS 500 + SA 3 seeds + 3-opt,,1.0,56.0,4941850.0,4941906.0,829.0,100%,基线（n=50 单车 + TW）
+Q3,Kaiwu SDK SA 分解,滚动窗口 3 段 × 3 seeds，每子 QUBO ≤289 比特,≤289 (per sub),0.02,56.0,4941850.0,4941906.0,31.44,0-2.1% (per sub),与 Python 完全一致；26× 加速
+Q3,Kaiwu CIM 真机（部分丢失）,CPQC-550；seg1 已提交但脚本 kill 时结果未取回,289 (seg1 only),,,,,,N/A（结果丢失）,seg1 配额扣 1 次但结果丢失；seg2/seg3 待用户 web 上传
+Q4,纯 Python LNS attack,6 K × 4 seeds × 500 LNS + ref warm start,,1.0,109.0,40.0,7149.0,1182.0,100%,K=7 主方案，与已知参考解持平
+Q4,Kaiwu SDK SA 分解,每车一子 TSP QUBO，7 个 ≤64 比特,≤64 (per vehicle),0.027,109.0,40.0,7149.0,3.77,0-3.3% (per vehicle),与 Python 完全一致；313× 加速
+Q4,Kaiwu CIM 真机（待补）,CPQC-550；7 个子 QUBO 待用户 web 上传,≤64 (per vehicle),,,,,,N/A（待上传）,待 web 平台一次上传 7 个子矩阵后回填

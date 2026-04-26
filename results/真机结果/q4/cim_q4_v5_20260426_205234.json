@@ -1,0 +1,61 @@
+{
+  "name": "q4_v5",
+  "cim_task_name": "q4_v5_20260426_205234",
+  "cim_machine": "CPQC-550",
+  "cim_solve_time_sec": 61.83,
+  "cim_sample_number": 10,
+  "n_qubo_vars": 49,
+  "n_ising_spins": 50,
+  "bit_width_8_applied": true,
+  "n_total_samples": 10,
+  "n_feasible": 1,
+  "feasibility_rate": 0.1,
+  "hamiltonian_values": [
+    5554.0,
+    5466.0,
+    5378.0,
+    5362.0,
+    5210.0,
+    5138.0,
+    4954.0,
+    4850.0,
+    4834.0,
+    4714.0
+  ],
+  "min_hamiltonian": 4714.0,
+  "max_hamiltonian": 5554.0,
+  "timestamp": "20260426_205234",
+  "customers_in": [
+    33,
+    25,
+    39,
+    23,
+    22,
+    41,
+    4
+  ],
+  "best_seg_after_polish": [
+    33,
+    25,
+    39,
+    23,
+    22,
+    41,
+    4
+  ],
+  "best_route_with_depot": [
+    0,
+    33,
+    25,
+    39,
+    23,
+    22,
+    41,
+    4,
+    0
+  ],
+  "seg_travel": 16.0,
+  "seg_penalty": 0.0,
+  "seg_cost": 16.0,
+  "seg_demand": 35.0
+}

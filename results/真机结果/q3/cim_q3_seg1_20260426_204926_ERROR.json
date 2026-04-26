@@ -1,0 +1,5 @@
+{
+  "name": "q3_seg1",
+  "error": "cannot reshape array of size 289 into shape (289,289)",
+  "timestamp": "20260426_204926"
+}
