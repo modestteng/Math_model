@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd *)",
+      "Bash(xelatex *)",
+      "Bash(PYTHONIOENCODING=utf-8 xelatex *)",
+      "Bash(ls)",
+      "Bash(ls *)",
+      "Bash(rm -f Question1.aux *)",
+      "Bash(rm -f Question2.aux *)",
+      "Bash(rm -f Question3.aux *)",
+      "Bash(rm -f Question4.aux *)",
+      "Bash(rm -f Abstract.aux *)",
+      "Bash(rm -f Sensitivity.aux *)",
+      "Bash(rm -f Evaluation.aux *)",
+      "Bash(rm -f Conclusion.aux *)",
+      "Bash(rm -f References.aux *)",
+      "Bash(rm -f Symbols.aux *)",
+      "Bash(rm -f Appendix.aux *)",
+      "Bash(rm -f main.aux *)"
+    ],
+    "deny": [
+      "Bash(rm -r *)",
+      "Bash(rm -rf *)",
+      "Bash(rm -fr *)",
+      "Bash(rm -R *)",
+      "Bash(rm --recursive *)",
+      "Bash(rm -f /*)",
+      "Bash(rm -f ~*)",
+      "Bash(sudo *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(chmod *)",
+      "Bash(chown *)",
+      "Bash(mv /*)",
+      "Bash(dd *)",
+      "Bash(mkfs *)",
+      "Bash(:(){ *)",
+      "Bash(npm install*)",
+      "Bash(pip install*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git reset --hard*)",
+      "Bash(git config *)",
+      "Bash(export ALL_PROXY*)",
+      "Bash(export HTTPS_PROXY*)",
+      "Bash(export HTTP_PROXY*)",
+      "Bash(set ALL_PROXY*)",
+      "Bash(set HTTPS_PROXY*)",
+      "Bash(set HTTP_PROXY*)"
+    ]
+  }
+}

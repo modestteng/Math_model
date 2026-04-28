@@ -1,0 +1,1184 @@
+﻿% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  a4paper,
+]{ctexart}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={数学建模 A 题论文公式与符号库},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{数学建模 A 题论文公式与符号库}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\begin{quote}
+使用方式：本文档按``先符号、后公式''整理，并分为两部分。第一部分为正文中
+90\%
+会用到的核心符号与公式，建议放在``模型假设、符号说明、模型建立、算法设计''中；第二部分为可能用到的补充公式，适合放在算法细节、消融实验、灵敏度分析或附录中。
+\end{quote}
+
+\section{第一部分：90\%
+会用到的符号与公式}\label{ux7b2cux4e00ux90e8ux520690-ux4f1aux7528ux5230ux7684ux7b26ux53f7ux4e0eux516cux5f0f}
+
+\subsection{1.1 核心符号表}\label{ux6838ux5fc3ux7b26ux53f7ux8868}
+
+\subsubsection{1.1.1
+集合、索引与数据参数}\label{ux96c6ux5408ux7d22ux5f15ux4e0eux6570ux636eux53c2ux6570}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+符号
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+含义
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+建议写法或取值
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(0\) & 配送中心，depot & 所有车辆从 0 出发并回到 0 \\
+\(i,j\) & 客户或节点编号 & \(i,j\in V\)；客户点通常为 \(1,\ldots,n\) \\
+\(p,q\) & 路径中的访问位置 & \(p,q=1,\ldots,n\) \\
+\(k\) & 车辆编号 & \(k=1,\ldots,K\) \\
+\(r\) & 子问题、子窗口或分解段编号 & 问题三滚动窗口中使用 \\
+\(V\) & 全部节点集合 & \(V=\{0,1,\ldots,n\}\) \\
+\(V_c\) & 客户集合 & \(V_c=\{1,2,\ldots,n\}\) \\
+\(n\) & 客户数量 & 问题一、二为 \(15\)；问题三、四为 \(50\) \\
+\(K\) & 可用车辆数 & 问题四中扫描 \(K\in\{5,6,\ldots,10\}\) \\
+\(K^*\) & 综合目标下的最优车辆数 & 当前结果建议写 \(K^*=7\) \\
+\(T_{ij}\) & 节点 \(i\) 到节点 \(j\) 的旅行时间 & 来自 51×51
+旅行时间矩阵 \\
+\(s_i\) & 客户 \(i\) 的服务时间 & 数据中均为 \(2\) \\
+\([a_i,b_i]\) & 客户 \(i\) 的允许开始服务时间窗 &
+允许违反，但计入罚值 \\
+\(d_i\) & 客户 \(i\) 的需求量 & 问题四容量约束中使用 \\
+\(C\) & 单车最大载货容量 & \(C=60\) \\
+\(D_{\mathrm{tot}}\) & 全部客户总需求 &
+\(D_{\mathrm{tot}}=\sum_{i=1}^{50}d_i=271\) \\
+\(M_1,M_2\) & 早到、晚到时间窗罚系数 & \(M_1=10,\ M_2=20\) \\
+\(M\) & 车辆使用数量的权重或罚系数 & 本文标定值 \(M=1000\) \\
+\end{longtable}
+
+\subsubsection{1.1.2
+路径、时间与目标函数符号}\label{ux8defux5f84ux65f6ux95f4ux4e0eux76eeux6807ux51fdux6570ux7b26ux53f7}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+符号
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+含义
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+使用场景
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\pi\) & 单车辆客户访问序列 & \(\pi=(\pi_1,\ldots,\pi_n)\) \\
+\(\pi_p\) & 单车辆路径中第 \(p\) 个访问客户 & 问题一、二、三 \\
+\(\pi^k\) & 车辆 \(k\) 的客户访问序列 & 问题四 \\
+\(m_k\) & 车辆 \(k\) 服务的客户数 & \(m_k=|\pi^k|\) \\
+\(L(\pi)\) & 单车辆路径总旅行时间 & 不含时间窗罚值 \\
+\(L_k\) & 车辆 \(k\) 的旅行时间 & 问题四 \\
+\(t_i\) & 客户 \(i\) 的实际开始服务时刻 & 无等待假设下等于到达时刻 \\
+\(t_i^k\) & 客户 \(i\) 由车辆 \(k\) 服务时的实际开始服务时刻 & 问题四 \\
+\(e_i\) & 客户 \(i\) 的早到违反量 & \(e_i=[a_i-t_i]_+\) \\
+\(\ell_i\) & 客户 \(i\) 的晚到违反量 & \(\ell_i=[t_i-b_i]_+\) \\
+\(P_i\) & 客户 \(i\) 的时间窗违反罚值 & \(P_i=M_1e_i^2+M_2\ell_i^2\) \\
+\(J(\pi)\) & 单车辆含时间窗罚值的综合目标 & 问题二、三 \\
+\(J_{\mathrm{inner}}(K)\) & 固定车辆数 \(K\) 时，不含车辆使用罚的目标 &
+问题四 \\
+\(J_{\mathrm{multi}}(K)\) & 含车辆使用罚的多车辆综合目标 & 问题四 \\
+\end{longtable}
+
+\subsubsection{1.1.3 QUBO、Ising
+与分解符号}\label{quboising-ux4e0eux5206ux89e3ux7b26ux53f7}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+符号
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+含义
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+使用场景
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathbf{x}\) & QUBO 二进制变量向量 &
+\(\mathbf{x}\in\{0,1\}^{N_{\mathrm{bit}}}\) \\
+\(Q\) & QUBO 矩阵 & \(\min \mathbf{x}^{\mathsf T}Q\mathbf{x}\) \\
+\(H(\mathbf{x})\) & QUBO 哈密顿量或能量函数 & 模型转化部分 \\
+\(A\) 或 \(A_{\mathrm{pen}}\) & one-hot 约束二次罚系数 & 当前代码常用
+\(A=200\) \\
+\(x_{i,p}\) & 客户 \(i\) 是否位于路径第 \(p\) 位 & 问题一、二基础
+QUBO \\
+\(z_{i,p}^{(r)}\) & 问题三第 \(r\) 个子窗口中的位置变量 &
+滚动窗口分解 \\
+\(x_{i,p}^{k}\) & 车辆 \(k\) 内部子 TSP 的位置变量 & 问题四每车子
+QUBO \\
+\(y_{ik}\) & 客户 \(i\) 是否分配给车辆 \(k\) & 问题四分配变量 \\
+\(u_k\) & 车辆 \(k\) 是否启用 & 可用于更规范地写容量约束 \\
+\(s_i^{\mathrm{Ising}}\) & Ising 自旋变量 &
+\(s_i^{\mathrm{Ising}}\in\{-1,+1\}\) \\
+\(s_{\mathrm{aux}}\) & QUBO 转 Ising 时的辅助自旋 & Kaiwu
+转换和解码中使用 \\
+\(J_{ij}^{\mathrm{I}},h_i\) & Ising 二次耦合和线性场 &
+\(E(\mathbf{s})=\sum J_{ij}^{\mathrm{I}}s_is_j+\sum h_is_i+c\) \\
+\(N_{\mathrm{bit}}\) & QUBO 二进制变量数 & 用于论证是否超过 550
+比特限制 \\
+\end{longtable}
+
+\subsection{1.2 核心公式}\label{ux6838ux5fc3ux516cux5f0f}
+
+\subsubsection{1.2.1
+节点集合与客户集合}\label{ux8282ux70b9ux96c6ux5408ux4e0eux5ba2ux6237ux96c6ux5408}
+
+\[
+V=\{0,1,2,\ldots,n\},\qquad V_c=\{1,2,\ldots,n\}.
+\]
+
+其中 \(0\) 为配送中心，\(V_c\) 为客户集合。
+
+\subsubsection{1.2.2
+单车辆路径表示}\label{ux5355ux8f66ux8f86ux8defux5f84ux8868ux793a}
+
+\[
+\pi=(\pi_1,\pi_2,\ldots,\pi_n),\qquad \pi_p\in V_c.
+\]
+
+完整闭环路径为
+
+\[
+0\to \pi_1\to \pi_2\to\cdots\to \pi_n\to 0.
+\]
+
+\subsubsection{1.2.3
+单车辆总旅行时间}\label{ux5355ux8f66ux8f86ux603bux65c5ux884cux65f6ux95f4}
+
+\[
+L(\pi)=T_{0,\pi_1}+\sum_{p=1}^{n-1}T_{\pi_p,\pi_{p+1}}+T_{\pi_n,0}.
+\]
+
+该式是问题一的主目标，也是问题二、三、四中旅行时间项的基础。
+
+\subsubsection{1.2.4
+无空闲等待下的到达时间递推}\label{ux65e0ux7a7aux95f2ux7b49ux5f85ux4e0bux7684ux5230ux8fbeux65f6ux95f4ux9012ux63a8}
+
+首个客户：
+
+\[
+t_{\pi_1}=T_{0,\pi_1}.
+\]
+
+后续客户：
+
+\[
+t_{\pi_p}=t_{\pi_{p-1}}+s_{\pi_{p-1}}+T_{\pi_{p-1},\pi_p},\qquad p=2,\ldots,n.
+\]
+
+说明：题目假设车辆不等待，因此若早到也立即开始服务，不把等待时间加入递推。
+
+\subsubsection{1.2.5
+早到量、晚到量与正部函数}\label{ux65e9ux5230ux91cfux665aux5230ux91cfux4e0eux6b63ux90e8ux51fdux6570}
+
+\[
+[z]_+=\max\{z,0\},
+\]
+
+\[
+e_i=[a_i-t_i]_+,
+\qquad
+\ell_i=[t_i-b_i]_+.
+\]
+
+其中 \(e_i\) 为早到违反量，\(\ell_i\) 为晚到违反量。
+
+\subsubsection{1.2.6
+时间窗二次惩罚}\label{ux65f6ux95f4ux7a97ux4e8cux6b21ux60e9ux7f5a}
+
+\[
+P_i(t_i)=M_1[a_i-t_i]_+^2+M_2[t_i-b_i]_+^2.
+\]
+
+代入题目给定参数：
+
+\[
+P_i(t_i)=10[a_i-t_i]_+^2+20[t_i-b_i]_+^2.
+\]
+
+注意：时间窗在本题中是软约束，不建议写成硬约束 \(a_i\le t_i\le b_i\)。
+
+\subsubsection{1.2.7
+单车辆含时间窗罚值的目标函数}\label{ux5355ux8f66ux8f86ux542bux65f6ux95f4ux7a97ux7f5aux503cux7684ux76eeux6807ux51fdux6570}
+
+\[
+J(\pi)=L(\pi)+\sum_{p=1}^{n}P_{\pi_p}\bigl(t_{\pi_p}\bigr).
+\]
+
+展开后为
+
+\[
+J(\pi)=T_{0,\pi_1}+\sum_{p=1}^{n-1}T_{\pi_p,\pi_{p+1}}+T_{\pi_n,0}
++\sum_{p=1}^{n}\left(M_1[a_{\pi_p}-t_{\pi_p}]_+^2+M_2[t_{\pi_p}-b_{\pi_p}]_+^2\right).
+\]
+
+\subsubsection{1.2.8 QUBO 标准形式}\label{qubo-ux6807ux51c6ux5f62ux5f0f}
+
+\[
+\min_{\mathbf{x}\in\{0,1\}^{N_{\mathrm{bit}}}}\mathbf{x}^{\mathsf T}Q\mathbf{x}.
+\]
+
+也可写成
+
+\[
+H(\mathbf{x})=\mathbf{x}^{\mathsf T}Q\mathbf{x}+c,
+\]
+
+其中常数项 \(c\) 不影响最优解。
+
+\subsubsection{1.2.9 one-hot
+位置编码变量}\label{one-hot-ux4f4dux7f6eux7f16ux7801ux53d8ux91cf}
+
+\[
+x_{i,p}=\begin{cases}
+1, & \text{客户 }i\text{ 被安排在路径第 }p\text{ 位},\\
+0, & \text{否则}.
+\end{cases}
+\]
+
+变量下标可映射为一维编号：
+
+\[
+q(i,p)=(i-1)n+(p-1),\qquad i,p=1,\ldots,n.
+\]
+
+\subsubsection{1.2.10 one-hot
+排列约束}\label{one-hot-ux6392ux5217ux7ea6ux675f}
+
+每个位置恰好安排一个客户：
+
+\[
+\sum_{i=1}^{n}x_{i,p}=1,\qquad p=1,\ldots,n.
+\]
+
+每个客户恰好出现一次：
+
+\[
+\sum_{p=1}^{n}x_{i,p}=1,\qquad i=1,\ldots,n.
+\]
+
+\subsubsection{1.2.11 单车辆 TSP 的 QUBO
+哈密顿量}\label{ux5355ux8f66ux8f86-tsp-ux7684-qubo-ux54c8ux5bc6ux987fux91cf}
+
+\[
+\begin{aligned}
+H_{\mathrm{TSP}}(\mathbf{x})=&
+A\sum_{p=1}^{n}\left(\sum_{i=1}^{n}x_{i,p}-1\right)^2
++A\sum_{i=1}^{n}\left(\sum_{p=1}^{n}x_{i,p}-1\right)^2 \\
+&+\sum_{i=1}^{n}\left(T_{0i}x_{i,1}+T_{i0}x_{i,n}\right)
++\sum_{p=1}^{n-1}\sum_{\substack{i,j=1\\ i\ne j}}^{n}T_{ij}x_{i,p}x_{j,p+1}.
+\end{aligned}
+\]
+
+第一、二项为 one-hot 罚项；第三、四项为从 depot 出发、客户间转移、回到
+depot 的旅行时间。
+
+\subsubsection{1.2.12 QUBO 变量数}\label{qubo-ux53d8ux91cfux6570}
+
+单车辆完整 one-hot 编码变量数：
+
+\[
+N_{\mathrm{bit}}=n^2.
+\]
+
+问题一、二中 \(n=15\)，因此
+
+\[
+N_{\mathrm{bit}}=15^2=225.
+\]
+
+问题三若直接对 50 个客户建模，则
+
+\[
+N_{\mathrm{bit}}=50^2=2500,
+\]
+
+超过 550 比特真机规模，因此需要分解。
+
+\subsubsection{1.2.13 QUBO 到 Ising
+的基础变量变换}\label{qubo-ux5230-ising-ux7684ux57faux7840ux53d8ux91cfux53d8ux6362}
+
+普通写法：
+
+\[
+x_i=\frac{1+s_i^{\mathrm{Ising}}}{2},\qquad s_i^{\mathrm{Ising}}\in\{-1,+1\}.
+\]
+
+若 Kaiwu 转换引入辅助自旋 \(s_{\mathrm{aux}}\)，解码可写为
+
+\[
+x_i=\frac{1+s_i^{\mathrm{Ising}}s_{\mathrm{aux}}}{2}.
+\]
+
+\subsubsection{1.2.14 Ising
+能量形式}\label{ising-ux80fdux91cfux5f62ux5f0f}
+
+\[
+E(\mathbf{s})=\sum_{i<j}J_{ij}^{\mathrm{I}}s_i^{\mathrm{Ising}}s_j^{\mathrm{Ising}}+\sum_i h_is_i^{\mathrm{Ising}}+c.
+\]
+
+其中 \(J_{ij}^{\mathrm{I}}\) 为二次耦合，\(h_i\) 为线性场，\(c\)
+为常数项。
+
+\subsubsection{1.2.15
+问题二的建模写法}\label{ux95eeux9898ux4e8cux7684ux5efaux6a21ux5199ux6cd5}
+
+问题二仍使用问题一的 one-hot QUBO 结构搜索路径排列：
+
+\[
+H_{Q2}(\mathbf{x})=H_{\mathrm{TSP}}(\mathbf{x}).
+\]
+
+解码得到路径 \(\pi\) 后，再按照真实时间递推计算
+
+\[
+J_{Q2}(\pi)=L(\pi)+\sum_{p=1}^{15}P_{\pi_p}\bigl(t_{\pi_p}\bigr).
+\]
+
+建议说明：时间窗罚值依赖前序路径的递推到达时间，直接塞入 QUBO
+容易导致能量尺度失衡，因此放在解码与局部搜索阶段评估。
+
+\subsubsection{1.2.16
+问题三滚动窗口分解的子段定义}\label{ux95eeux9898ux4e09ux6edaux52a8ux7a97ux53e3ux5206ux89e3ux7684ux5b50ux6bb5ux5b9aux4e49}
+
+设当前全局路径为
+
+\[
+\pi=(\pi_1,\pi_2,\ldots,\pi_{50}).
+\]
+
+选取连续子段
+
+\[
+B_r=(\pi_l,\pi_{l+1},\ldots,\pi_{l+m-1}),\qquad m\le 17.
+\]
+
+子段前驱节点和后继节点分别为
+
+\[
+u=\begin{cases}
+0, & l=1,\\
+\pi_{l-1}, & l>1,
+\end{cases}
+\qquad
+v=\begin{cases}
+0, & l+m-1=50,\\
+\pi_{l+m}, & l+m-1<50.
+\end{cases}
+\]
+
+\subsubsection{1.2.17 问题三子窗口 QUBO
+变量数}\label{ux95eeux9898ux4e09ux5b50ux7a97ux53e3-qubo-ux53d8ux91cfux6570}
+
+\[
+N_{\mathrm{sub}}=m^2.
+\]
+
+若取 \(m=17\)，则
+
+\[
+N_{\mathrm{sub}}=17^2=289\le 550.
+\]
+
+\subsubsection{1.2.18 问题三子窗口
+QUBO}\label{ux95eeux9898ux4e09ux5b50ux7a97ux53e3-qubo}
+
+对子段客户 \(i\in B_r\)，定义
+
+\[
+z_{i,p}^{(r)}=\begin{cases}
+1, & \text{子段 }r\text{ 中客户 }i\text{ 被安排在第 }p\text{ 位},\\
+0, & \text{否则}.
+\end{cases}
+\]
+
+对应子 QUBO 为
+
+\[
+\begin{aligned}
+H_r(\mathbf{z})=&
+A\sum_{p=1}^{m}\left(\sum_{i\in B_r}z_{i,p}^{(r)}-1\right)^2
++A\sum_{i\in B_r}\left(\sum_{p=1}^{m}z_{i,p}^{(r)}-1\right)^2 \\
+&+\sum_{i\in B_r}\left(T_{u,i}z_{i,1}^{(r)}+T_{i,v}z_{i,m}^{(r)}\right)
++\sum_{p=1}^{m-1}\sum_{\substack{i,j\in B_r\\ i\ne j}}T_{ij}z_{i,p}^{(r)}z_{j,p+1}^{(r)}.
+\end{aligned}
+\]
+
+\subsubsection{1.2.19
+子段替换接受准则}\label{ux5b50ux6bb5ux66ffux6362ux63a5ux53d7ux51c6ux5219}
+
+若子段重排后的全局路径为 \(\pi'\)，则接受准则为
+
+\[
+\pi\leftarrow\pi'\quad \text{if}\quad J(\pi')<J(\pi).
+\]
+
+\subsubsection{1.2.20
+问题四客户分配变量}\label{ux95eeux9898ux56dbux5ba2ux6237ux5206ux914dux53d8ux91cf}
+
+\[
+y_{ik}=\begin{cases}
+1, & \text{客户 }i\text{ 分配给车辆 }k,\\
+0, & \text{否则}.
+\end{cases}
+\]
+
+车辆启用变量可写为
+
+\[
+u_k=\begin{cases}
+1, & \text{车辆 }k\text{ 被使用},\\
+0, & \text{否则}.
+\end{cases}
+\]
+
+\subsubsection{1.2.21
+客户完整覆盖约束}\label{ux5ba2ux6237ux5b8cux6574ux8986ux76d6ux7ea6ux675f}
+
+\[
+\sum_{k=1}^{K}y_{ik}=1,\qquad i=1,\ldots,n.
+\]
+
+\subsubsection{1.2.22 容量约束}\label{ux5bb9ux91cfux7ea6ux675f}
+
+若显式引入车辆启用变量 \(u_k\)，容量约束写为
+
+\[
+\sum_{i=1}^{n}d_i y_{ik}\le C u_k,\qquad k=1,\ldots,K.
+\]
+
+若固定车辆 \(k\) 的路径客户集合为 \(\pi^k\)，也可写成
+
+\[
+\sum_{i\in \pi^k}d_i\le C,\qquad k=1,\ldots,K.
+\]
+
+\subsubsection{1.2.23
+车辆数容量下界}\label{ux8f66ux8f86ux6570ux5bb9ux91cfux4e0bux754c}
+
+\[
+K_{\min}=\left\lceil \frac{\sum_{i=1}^{n}d_i}{C}\right\rceil.
+\]
+
+对问题四数据：
+
+\[
+K_{\min}=\left\lceil \frac{271}{60}\right\rceil=5.
+\]
+
+\subsubsection{1.2.24
+单辆车旅行时间}\label{ux5355ux8f86ux8f66ux65c5ux884cux65f6ux95f4}
+
+车辆 \(k\) 的路径为
+
+\[
+\pi^k=(\pi_1^k,\pi_2^k,\ldots,\pi_{m_k}^k).
+\]
+
+其旅行时间为
+
+\[
+L_k=T_{0,\pi_1^k}+\sum_{p=1}^{m_k-1}T_{\pi_p^k,\pi_{p+1}^k}+T_{\pi_{m_k}^k,0}.
+\]
+
+\subsubsection{1.2.25
+多车辆无等待时间递推}\label{ux591aux8f66ux8f86ux65e0ux7b49ux5f85ux65f6ux95f4ux9012ux63a8}
+
+车辆 \(k\) 的首个客户：
+
+\[
+t_{\pi_1^k}^{k}=T_{0,\pi_1^k}.
+\]
+
+后续客户：
+
+\[
+t_{\pi_p^k}^{k}=t_{\pi_{p-1}^k}^{k}+s_{\pi_{p-1}^k}+T_{\pi_{p-1}^k,\pi_p^k},\qquad p=2,\ldots,m_k.
+\]
+
+\subsubsection{1.2.26
+固定车辆数下的多车辆内部目标}\label{ux56faux5b9aux8f66ux8f86ux6570ux4e0bux7684ux591aux8f66ux8f86ux5185ux90e8ux76eeux6807}
+
+\[
+J_{\mathrm{inner}}(K)=\sum_{k=1}^{K}\left(L_k+\sum_{i\in\pi^k}P_i(t_i^k)\right).
+\]
+
+\subsubsection{1.2.27
+含车辆使用成本的多车辆综合目标}\label{ux542bux8f66ux8f86ux4f7fux7528ux6210ux672cux7684ux591aux8f66ux8f86ux7efcux5408ux76eeux6807}
+
+\[
+J_{\mathrm{multi}}(K)=M K+J_{\mathrm{inner}}(K).
+\]
+
+展开为
+
+\[
+J_{\mathrm{multi}}(K)=M K+\sum_{k=1}^{K}\left[
+T_{0,\pi_1^k}+\sum_{p=1}^{m_k-1}T_{\pi_p^k,\pi_{p+1}^k}+T_{\pi_{m_k}^k,0}
++\sum_{i\in\pi^k}\left(M_1[a_i-t_i^k]_+^2+M_2[t_i^k-b_i]_+^2\right)
+\right].
+\]
+
+\subsubsection{1.2.28
+最优车辆数选择}\label{ux6700ux4f18ux8f66ux8f86ux6570ux9009ux62e9}
+
+\[
+K^*=\arg\min_{K\in\mathcal K}J_{\mathrm{multi}}(K).
+\]
+
+本题当前主方案建议写
+
+\[
+K^*=7,\qquad J_{\mathrm{multi}}(7)=7149.
+\]
+
+其中
+
+\[
+\text{travel}=109,
+\qquad
+\text{penalty}=40,
+\qquad
+J_{\mathrm{inner}}=149.
+\]
+
+\subsubsection{1.2.29 每辆车的子
+TSP-QUBO}\label{ux6bcfux8f86ux8f66ux7684ux5b50-tsp-qubo}
+
+对车辆 \(k\) 的客户集合 \(B_k\)，设 \(m_k=|B_k|\)，定义
+
+\[
+x_{i,p}^{k}=\begin{cases}
+1, & \text{车辆 }k\text{ 中客户 }i\text{ 被安排在第 }p\text{ 位},\\
+0, & \text{否则}.
+\end{cases}
+\]
+
+则每辆车的子 QUBO 为
+
+\[
+\begin{aligned}
+H_k(\mathbf{x})=&
+A\sum_{p=1}^{m_k}\left(\sum_{i\in B_k}x_{i,p}^{k}-1\right)^2
++A\sum_{i\in B_k}\left(\sum_{p=1}^{m_k}x_{i,p}^{k}-1\right)^2 \\
+&+\sum_{i\in B_k}\left(T_{0i}x_{i,1}^{k}+T_{i0}x_{i,m_k}^{k}\right)
++\sum_{p=1}^{m_k-1}\sum_{\substack{i,j\in B_k\\ i\ne j}}T_{ij}x_{i,p}^{k}x_{j,p+1}^{k}.
+\end{aligned}
+\]
+
+如果最终每车最多 \(8\) 个客户，则最大子 QUBO 变量数为
+
+\[
+N_{\mathrm{sub}}^{\max}=8^2=64.
+\]
+
+\section{第二部分：可能用到的符号与公式}\label{ux7b2cux4e8cux90e8ux5206ux53efux80fdux7528ux5230ux7684ux7b26ux53f7ux4e0eux516cux5f0f}
+
+\subsection{2.1 补充符号表}\label{ux8865ux5145ux7b26ux53f7ux8868}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+符号 & 含义 & 可能出现的位置 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\widehat\tau_p\) & 第 \(p\) 个位置的估计到达时刻 & 问题二方案 D
+消融 \\
+\(\bar T_{0*}\) & depot 到客户的平均旅行时间 & 估计
+\(\widehat\tau_p\) \\
+\(\bar T_{**}\) & 客户间平均旅行时间 & 估计 \(\widehat\tau_p\) \\
+\(\bar s\) & 平均服务时间 & 估计 \(\widehat\tau_p\) \\
+\(\Delta J\) & 候选解与当前解的目标差 & 局部搜索、SA、LNS \\
+\(\Theta\) & 模拟退火温度 & 避免与旅行时间矩阵 \(T\) 混淆 \\
+\(\Theta_0,\Theta_{\mathrm{cut}}\) & 初始温度、截止温度 & SA 参数说明 \\
+\(\alpha\) & 降温系数 & SA 参数说明 \\
+\(p_{\mathrm{acc}}\) & SA 接受概率 & 算法部分 \\
+\(N_{\mathrm{sample}}\) & 求解器返回样本数 & 可行率统计 \\
+\(N_{\mathrm{feas}}\) & 可行样本数 & 可行率统计 \\
+\(\mathrm{Gap}\) & 与参考解的相对差距 & 结果对比 \\
+\(\rho_P\) & 时间窗罚值占比 & 结果分析 \\
+\(\rho_V\) & 时间窗违反率 & 结果分析 \\
+\(\eta_k\) & 车辆 \(k\) 的容量利用率 & 问题四结果表 \\
+\(S_{ij}\) & Clarke-Wright 节省值 & 问题四启发式分配 \\
+\(x_{ij}^k\) & 车辆 \(k\) 是否走弧 \(i\to j\) & 备用 MILP/VRP 写法 \\
+\(U_i\) & MTZ 子回路消除辅助变量 & 备用精确模型 \\
+\(\lambda\) & 8-bit 量化缩放系数 & CIM 工程实现 \\
+\(\tilde J_{ij}^{\mathrm{I}}\) & 量化后的 Ising 耦合 & CIM 工程实现 \\
+\end{longtable}
+
+\subsection{2.2
+可能用到的补充公式}\label{ux53efux80fdux7528ux5230ux7684ux8865ux5145ux516cux5f0f}
+
+\subsubsection{2.2.1 问题二方案 D
+的位置到达时刻估计}\label{ux95eeux9898ux4e8cux65b9ux6848-d-ux7684ux4f4dux7f6eux5230ux8fbeux65f6ux523bux4f30ux8ba1}
+
+\[
+\widehat\tau_1=\bar T_{0*},
+\]
+
+\[
+\widehat\tau_p=\widehat\tau_{p-1}+\bar s+\bar T_{**},\qquad p=2,\ldots,n.
+\]
+
+其中
+
+\[
+\bar T_{0*}=\frac{1}{n}\sum_{i=1}^{n}T_{0i},
+\qquad
+\bar T_{**}=\frac{1}{n(n-1)}\sum_{\substack{i,j=1\\i\ne j}}^{n}T_{ij},
+\qquad
+\bar s=\frac{1}{n}\sum_{i=1}^{n}s_i.
+\]
+
+\subsubsection{2.2.2
+位置感知时间窗线性化消融模型}\label{ux4f4dux7f6eux611fux77e5ux65f6ux95f4ux7a97ux7ebfux6027ux5316ux6d88ux878dux6a21ux578b}
+
+若将时间窗近似塞入 QUBO，可写
+
+\[
+H_D(\mathbf{x})=H_{\mathrm{TSP}}(\mathbf{x})+
+\sum_{i=1}^{n}\sum_{p=1}^{n}\left(M_1[a_i-\widehat\tau_p]_+^2+M_2[\widehat\tau_p-b_i]_+^2\right)x_{i,p}.
+\]
+
+该式适合放在消融实验中，不建议作为主模型。原因是位置罚值可能远大于
+one-hot 罚系数，使 QUBO 能量尺度失衡。
+
+\subsubsection{2.2.3
+显式时间槽编码的变量数量}\label{ux663eux5f0fux65f6ux95f4ux69fdux7f16ux7801ux7684ux53d8ux91cfux6570ux91cf}
+
+若把每个客户的服务时刻离散成 \(T_{\max}\) 个时间槽，粗略变量数为
+
+\[
+N_{\mathrm{time}}=nT_{\max}.
+\]
+
+当 \(T_{\max}\)
+较大时，该方案会明显增加比特数，因此仅适合在方案比较中说明``不采用''。
+
+\subsubsection{2.2.4 全 3D one-hot
+多车辆编码变量数}\label{ux5168-3d-one-hot-ux591aux8f66ux8f86ux7f16ux7801ux53d8ux91cfux6570}
+
+若直接定义 \(x_{i,p,k}\) 表示车辆 \(k\) 在第 \(p\) 位访问客户
+\(i\)，变量数为
+
+\[
+N_{\mathrm{3D}}=Kn^2.
+\]
+
+对问题四 \(n=50,K=7\)，应为
+
+\[
+N_{\mathrm{3D}}=7\times 50^2=17500.
+\]
+
+若写 \(12500\)，对应的是 \(K=5\)，不是 \(K=7\)。
+
+\subsubsection{2.2.5
+分层编码变量数量估计}\label{ux5206ux5c42ux7f16ux7801ux53d8ux91cfux6570ux91cfux4f30ux8ba1}
+
+若先确定客户分配，再对每辆车分别建子 TSP-QUBO，则子问题规模约为
+
+\[
+N_{\mathrm{layer}}\approx \max_k m_k^2,
+\]
+
+或总子问题规模为
+
+\[
+N_{\mathrm{layer},total}=\sum_{k=1}^{K}m_k^2.
+\]
+
+该式可用于解释为何``启发式分配 + 每车子 QUBO''更适合 550 比特限制。
+
+\subsubsection{2.2.6 Clarke-Wright Savings
+节省值}\label{clarke-wright-savings-ux8282ux7701ux503c}
+
+\[
+S_{ij}=T_{0i}+T_{0j}-T_{ij}.
+\]
+
+若合并前为 \(0\to i\to 0\) 与 \(0\to j\to 0\)，合并后为
+\(0\to i\to j\to 0\)，则 \(S_{ij}\)
+表示理论节省旅行时间。容量允许时，优先尝试较大 \(S_{ij}\) 的合并。
+
+\subsubsection{2.2.7
+近邻构造的综合评分}\label{ux8fd1ux90bbux6784ux9020ux7684ux7efcux5408ux8bc4ux5206}
+
+在考虑时间窗紧迫性时，可定义候选客户 \(j\) 的贪心评分：
+
+\[
+\operatorname{score}(j)=T_{cj}+w_{\mathrm{late}}[t+T_{cj}-b_j]_+ + w_{\mathrm{early}}[a_j-(t+T_{cj})]_+,
+\]
+
+其中 \(c\) 为当前节点，\(t\)
+为当前时刻，\(w_{\mathrm{late}},w_{\mathrm{early}}\)
+为权重。每步选择评分最小的客户。
+
+\subsubsection{2.2.8
+罚意识贪心评分}\label{ux7f5aux610fux8bc6ux8d2aux5fc3ux8bc4ux5206}
+
+也可使用二次罚值构造评分：
+
+\[
+\operatorname{score}_{P}(j)=T_{cj}+\beta\left(M_1[a_j-(t+T_{cj})]_+^2+M_2[(t+T_{cj})-b_j]_+^2\right).
+\]
+
+其中 \(\beta\) 为罚值权重。
+
+\subsubsection{2.2.9
+局部搜索的目标差}\label{ux5c40ux90e8ux641cux7d22ux7684ux76eeux6807ux5dee}
+
+对当前解 \(S\) 与候选解 \(S'\)，定义
+
+\[
+\Delta J=J(S')-J(S).
+\]
+
+确定性局部搜索接受准则为
+
+\[
+S\leftarrow S'\quad \text{if}\quad \Delta J<0.
+\]
+
+\subsubsection{2.2.10
+模拟退火接受概率}\label{ux6a21ux62dfux9000ux706bux63a5ux53d7ux6982ux7387}
+
+\[
+p_{\mathrm{acc}}=\min\left\{1,\exp\left(-\frac{\Delta J}{\Theta}\right)\right\}.
+\]
+
+若 \(\Delta J<0\)，则一定接受；若 \(\Delta J>0\)，则以概率
+\(\exp(-\Delta J/\Theta)\) 接受。
+
+\subsubsection{2.2.11
+模拟退火温度更新}\label{ux6a21ux62dfux9000ux706bux6e29ux5ea6ux66f4ux65b0}
+
+\[
+\Theta_{r+1}=\alpha \Theta_r,
+\qquad 0<\alpha<1.
+\]
+
+停止条件可写为
+
+\[
+\Theta_r\le \Theta_{\mathrm{cut}}.
+\]
+
+\subsubsection{2.2.12 one-hot
+罚墙跨越概率}\label{one-hot-ux7f5aux5899ux8de8ux8d8aux6982ux7387}
+
+在 Metropolis 退火中，若一次临时违约需要增加约 \(A\)
+的能量，则粗略接受概率为
+
+\[
+p_{\mathrm{cross}}\approx \exp\left(-\frac{A}{\Theta}\right).
+\]
+
+该式可用于解释 one-hot QUBO 在经典单翻转 SA 中可行率较低的结构性原因。
+
+\subsubsection{2.2.13 LNS
+摧毁与重构的接受准则}\label{lns-ux6467ux6bc1ux4e0eux91cdux6784ux7684ux63a5ux53d7ux51c6ux5219}
+
+设 \(R\) 为被摧毁客户集合，重构后得到 \(S'\)，可写
+
+\[
+S' = \operatorname{Repair}\left(S\setminus R\right).
+\]
+
+若采用贪心接受：
+
+\[
+S\leftarrow S'\quad \text{if}\quad J(S')<J(S).
+\]
+
+若采用 SA 式接受：
+
+\[
+\Pr(S\leftarrow S')=\min\left\{1,\exp\left(-\frac{J(S')-J(S)}{\Theta}\right)\right\}.
+\]
+
+\subsubsection{2.2.14 Regret-2
+插入准则}\label{regret-2-ux63d2ux5165ux51c6ux5219}
+
+设客户 \(i\) 插入各可行位置产生的最小与次小增量分别为
+\(\Delta J_i^{(1)}\) 和 \(\Delta J_i^{(2)}\)，则 regret 值为
+
+\[
+R_i=\Delta J_i^{(2)}-\Delta J_i^{(1)}.
+\]
+
+优先插入 \(R_i\) 较大的客户，避免``难插客户''被留到最后。
+
+\subsubsection{2.2.15 相对差距 Gap}\label{ux76f8ux5bf9ux5deeux8ddd-gap}
+
+若 \(J_{\mathrm{alg}}\) 为算法结果，\(J_{\mathrm{ref}}\) 为参考结果，则
+
+\[
+\mathrm{Gap}=\frac{J_{\mathrm{alg}}-J_{\mathrm{ref}}}{J_{\mathrm{ref}}}\times 100\%.
+\]
+
+\subsubsection{2.2.16 QUBO
+解码可行率}\label{qubo-ux89e3ux7801ux53efux884cux7387}
+
+\[
+\mathrm{FeasRate}=\frac{N_{\mathrm{feas}}}{N_{\mathrm{sample}}}\times 100\%.
+\]
+
+\subsubsection{2.2.17
+时间窗罚值占比}\label{ux65f6ux95f4ux7a97ux7f5aux503cux5360ux6bd4}
+
+\[
+\rho_P=\frac{\sum_i P_i}{J}\times 100\%.
+\]
+
+该式可用于说明问题二、三中时间窗惩罚远大于旅行时间的现象。
+
+\subsubsection{2.2.18
+时间窗违反率}\label{ux65f6ux95f4ux7a97ux8fddux53cdux7387}
+
+\[
+\rho_V=\frac{|\{i:e_i+\ell_i>0\}|}{n}\times 100\%.
+\]
+
+\subsubsection{2.2.19 容量利用率}\label{ux5bb9ux91cfux5229ux7528ux7387}
+
+车辆 \(k\) 的容量利用率为
+
+\[
+\eta_k=\frac{\sum_{i\in\pi^k}d_i}{C}\times 100\%.
+\]
+
+\subsubsection{2.2.20
+多车辆双目标的字典序写法}\label{ux591aux8f66ux8f86ux53ccux76eeux6807ux7684ux5b57ux5178ux5e8fux5199ux6cd5}
+
+若严格体现``先少用车、再优化服务质量''，可写为
+
+\[
+\min \left(K,\ J_{\mathrm{inner}}(K)\right).
+\]
+
+加权和写法为
+
+\[
+\min J_{\mathrm{multi}}(K)=MK+J_{\mathrm{inner}}(K).
+\]
+
+论文正文可以说明：本文采用加权和便于比较不同 \(K\)，并通过 \(K\)
+灵敏度曲线验证。
+
+\subsubsection{2.2.21
+两个车辆数方案的权重阈值}\label{ux4e24ux4e2aux8f66ux8f86ux6570ux65b9ux6848ux7684ux6743ux91cdux9608ux503c}
+
+比较 \(K_1\) 与 \(K_2\) 两个方案时，若
+
+\[
+MK_1+J_{\mathrm{inner}}(K_1)<MK_2+J_{\mathrm{inner}}(K_2),
+\]
+
+则 \(K_1\) 更优。由此可解出权重阈值：
+
+\[
+M>\frac{J_{\mathrm{inner}}(K_1)-J_{\mathrm{inner}}(K_2)}{K_2-K_1},\qquad K_2>K_1.
+\]
+
+例如比较 \(K=7\) 与 \(K=8\)，若
+\(J_{\mathrm{inner}}(7)=149\)、\(J_{\mathrm{inner}}(8)=124\)，则 \(K=7\)
+优于 \(K=8\) 的条件为
+
+\[
+M>25.
+\]
+
+\subsubsection{2.2.22 Pareto
+支配关系}\label{pareto-ux652fux914dux5173ux7cfb}
+
+若方案 \(A\) 与 \(B\) 比较，且 \(A\) 在所有指标上不劣于
+\(B\)，并至少一个指标严格优于 \(B\)，则称 \(A\) 支配 \(B\)：
+
+\[
+A\prec B
+\iff
+f_m(A)\le f_m(B),\ \forall m,
+\quad \text{且}\quad
+\exists m:f_m(A)<f_m(B).
+\]
+
+可用于说明 \(K=7\) 与 \(K=8\) 是互不支配的 Pareto 对照方案。
+
+\subsubsection{2.2.23 备用弧变量 VRP
+模型}\label{ux5907ux7528ux5f27ux53d8ux91cf-vrp-ux6a21ux578b}
+
+若需要写更传统的 VRP 约束，可定义
+
+\[
+x_{ij}^k=\begin{cases}
+1, & \text{车辆 }k\text{ 从节点 }i\text{ 行驶到节点 }j,\\
+0, & \text{否则}.
+\end{cases}
+\]
+
+客户访问约束：
+
+\[
+\sum_{k=1}^{K}\sum_{i\in V\setminus\{j\}}x_{ij}^k=1,
+\qquad j\in V_c.
+\]
+
+流守恒约束：
+
+\[
+\sum_{j\in V\setminus\{i\}}x_{ij}^k=
+\sum_{j\in V\setminus\{i\}}x_{ji}^k,
+\qquad i\in V_c,\quad k=1,\ldots,K.
+\]
+
+车辆出入 depot 约束：
+
+\[
+\sum_{j\in V_c}x_{0j}^k=u_k,
+\qquad
+\sum_{i\in V_c}x_{i0}^k=u_k.
+\]
+
+容量约束：
+
+\[
+\sum_{i\in V_c}d_i\sum_{j\in V}x_{ij}^k\le C u_k.
+\]
+
+这套公式不一定进入主 QUBO，但可作为问题四基础 VRP 模型的补充。
+
+\subsubsection{2.2.24 MTZ
+子回路消除约束}\label{mtz-ux5b50ux56deux8defux6d88ux9664ux7ea6ux675f}
+
+若使用传统精确模型，可用 MTZ 约束消除子回路：
+
+\[
+U_i-U_j+n\sum_{k=1}^{K}x_{ij}^k\le n-1,
+\qquad i\ne j,\ i,j\in V_c.
+\]
+
+其中 \(U_i\) 为访问顺序辅助变量。若论文篇幅紧张，此式可不写。
+
+\subsubsection{2.2.25 Held-Karp 精确 DP
+基线}\label{held-karp-ux7cbeux786e-dp-ux57faux7ebf}
+
+用于问题一精确验证。设 \(S\subseteq V_c\)，\(j\in S\)，\(f(S,j)\) 表示从
+depot 出发，访问集合 \(S\) 并以 \(j\) 结束的最短路径长度，则
+
+\[
+f(\{j\},j)=T_{0j},
+\]
+
+\[
+f(S,j)=\min_{i\in S\setminus\{j\}}\left[f(S\setminus\{j\},i)+T_{ij}\right].
+\]
+
+最终最优闭环长度为
+
+\[
+L^*=\min_{j\in V_c}\left[f(V_c,j)+T_{j0}\right].
+\]
+
+时间复杂度可写为
+
+\[
+O(n^2 2^n).
+\]
+
+\subsubsection{2.2.26 8-bit Ising
+耦合量化}\label{bit-ising-ux8026ux5408ux91cfux5316}
+
+若 CIM 硬件要求 \(|\tilde J_{ij}^{\mathrm{I}}|\le 127\)，可写缩放系数
+
+\[
+\lambda=\frac{127}{\max_{i,j}|J_{ij}^{\mathrm{I}}|}.
+\]
+
+量化后耦合为
+
+\[
+\tilde J_{ij}^{\mathrm{I}}=\operatorname{round}(\lambda J_{ij}^{\mathrm{I}}).
+\]
+
+论文中可说明：量化应尽量保持 one-hot 罚项与路径项的相对尺度。
+
+\subsubsection{2.2.27
+罚系数的尺度说明}\label{ux7f5aux7cfbux6570ux7684ux5c3aux5ea6ux8bf4ux660e}
+
+为了使 one-hot 约束优先满足，应令罚系数 \(A\)
+足够大，使违反排列约束带来的收益不足以抵消罚项。保守写法为
+
+\[
+2A \gg \max_{\pi,\pi'}|L(\pi)-L(\pi')|_{\mathrm{local}}.
+\]
+
+在本文实验中采用
+
+\[
+A=200.
+\]
+
+建议正文避免写``\(A=200\) 满足
+\(A>225\)''这类不一致表述；更稳妥的写法是``\(A=200\)
+为经灵敏度扫描标定的折中值，且单次典型违约产生约 \(2A=400\)
+的罚值，能够压制局部路径项收益''。
+
+\subsubsection{2.2.28
+时间窗罚系数灵敏度}\label{ux65f6ux95f4ux7a97ux7f5aux7cfbux6570ux7075ux654fux5ea6}
+
+若需要分析 \(M_1,M_2\) 变化，可写
+
+\[
+J(\pi;M_1,M_2)=L(\pi)+\sum_i\left(M_1[a_i-t_i]_+^2+M_2[t_i-b_i]_+^2\right).
+\]
+
+比较不同罚系数组合时可计算
+
+\[
+\Delta J_{M_1,M_2}=J(\pi;M_1,M_2)-J(\pi;10,20).
+\]
+
+\subsubsection{2.2.29
+分解后拼接与全局精修}\label{ux5206ux89e3ux540eux62fcux63a5ux4e0eux5168ux5c40ux7cbeux4fee}
+
+若第 \(r\) 个子问题求得局部最优排列 \(\pi_r^*\)，拼接后的路径可记为
+
+\[
+\pi^{\mathrm{merge}}=\operatorname{Merge}(\pi_1^*,\pi_2^*,\ldots,\pi_R^*).
+\]
+
+最终再经过局部搜索：
+
+\[
+\pi^*=\operatorname{Polish}\left(\pi^{\mathrm{merge}}\right).
+\]
+
+\subsubsection{2.2.30
+最终论文建议取舍}\label{ux6700ux7ec8ux8bbaux6587ux5efaux8baeux53d6ux820d}
+
+若正文篇幅有限，建议``必须写''的公式为：
+
+\[
+L(\pi),\quad t_{\pi_p},\quad P_i(t_i),\quad J(\pi),\quad H_{\mathrm{TSP}}(\mathbf{x}),\quad x_i=\frac{1+s_i}{2},\quad H_r(\mathbf{z}),\quad J_{\mathrm{multi}}(K),\quad H_k(\mathbf{x}).
+\]
+
+若附录或算法细节有空间，再补充：
+
+\[
+S_{ij},\quad p_{\mathrm{acc}},\quad \mathrm{Gap},\quad \mathrm{FeasRate},\quad \rho_P,\quad K^*=\arg\min_K J_{\mathrm{multi}}(K),\quad f(S,j).
+\]
+
+\section{易错点提醒}\label{ux6613ux9519ux70b9ux63d0ux9192}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  时间窗是软约束，不要在主模型中强行写 \(a_i\le t_i\le b_i\)。
+\item
+  问题二的主 QUBO 建议仍写 one-hot +
+  距离项，时间窗罚值在解码后用真实递推时刻计算。
+\item
+  问题四全 3D one-hot 变量数为 \(Kn^2\)。当 \(K=7,n=50\) 时是
+  \(17500\)，不是 \(12500\)。
+\item
+  \(M=1000\)
+  是为了比较不同车辆数引入的车辆使用权重，不是题目直接给定参数。
+\item
+  问题二、三若没有精确 DP
+  证明，结果措辞建议写``近似最优''或``稳定局部最优''，不要写``已证明全局最优''。
+\item
+  附录代码若放入 Kaiwu 相关脚本，应脱敏账号和 SDK Code。
+\end{enumerate}
+
+\end{document}

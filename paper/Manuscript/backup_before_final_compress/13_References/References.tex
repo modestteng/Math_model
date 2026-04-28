@@ -1,0 +1,98 @@
+% =============================================================
+%  References.tex —— §13 参考文献（手写 thebibliography）
+%  说明：QUBO / Ising / CIM / TSP / VRP / Kaiwu SDK / 模拟退火 / LNS / Savings 主题
+%  编译方式：xelatex References.tex
+% =============================================================
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{hyperref}
+
+\title{参考文献}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{thebibliography}{99}
+
+% --- QUBO / Ising 基础 ---
+\bibitem{lucas2014ising}
+Lucas A. Ising formulations of many NP problems[J]. \emph{Frontiers in Physics}, 2014, 2: 5.
+
+\bibitem{glover2019qubo}
+Glover F, Kochenberger G, Du Y. A Tutorial on Formulating and Using QUBO Models[J]. \emph{4OR}, 2019, 17(4): 335--371.
+
+\bibitem{kadowaki1998qa}
+Kadowaki T, Nishimori H. Quantum annealing in the transverse Ising model[J]. \emph{Physical Review E}, 1998, 58(5): 5355--5363.
+
+% --- CIM / 相干伊辛机 ---
+\bibitem{yamamoto2017cim}
+Yamamoto Y, Aihara K, Leleu T, et al. Coherent Ising machines---Optical neural networks operating at the quantum limit[J]. \emph{npj Quantum Information}, 2017, 3: 49.
+
+\bibitem{honjo2021cim2000}
+Honjo T, Sonobe T, Inaba K, et al. 100,000-spin coherent Ising machine[J]. \emph{Science Advances}, 2021, 7(40): eabh0952.
+
+\bibitem{boson2024cpqc}
+玻色量子. CPQC-550 相干伊辛机用户手册（Kaiwu SDK 1.3.1）[Z]. 北京: 北京玻色量子科技有限公司, 2024. \url{https://platform.qboson.com}.
+
+% --- TSP / VRP 经典 ---
+\bibitem{heldkarp1962dp}
+Held M, Karp R M. A Dynamic Programming Approach to Sequencing Problems[J]. \emph{Journal of the SIAM}, 1962, 10(1): 196--210.
+
+\bibitem{clarke1964savings}
+Clarke G, Wright J W. Scheduling of Vehicles from a Central Depot to a Number of Delivery Points[J]. \emph{Operations Research}, 1964, 12(4): 568--581.
+
+\bibitem{solomon1987vrptw}
+Solomon M M. Algorithms for the Vehicle Routing and Scheduling Problems with Time Window Constraints[J]. \emph{Operations Research}, 1987, 35(2): 254--265.
+
+\bibitem{toth2014vrp}
+Toth P, Vigo D. \emph{Vehicle Routing: Problems, Methods, and Applications}[M]. 2nd ed. Philadelphia: SIAM, 2014.
+
+% --- 模拟退火 / LNS / Or-opt 元启发式 ---
+\bibitem{kirkpatrick1983sa}
+Kirkpatrick S, Gelatt C D, Vecchi M P. Optimization by Simulated Annealing[J]. \emph{Science}, 1983, 220(4598): 671--680.
+
+\bibitem{lin1973twoopt}
+Lin S, Kernighan B W. An Effective Heuristic Algorithm for the Traveling-Salesman Problem[J]. \emph{Operations Research}, 1973, 21(2): 498--516.
+
+\bibitem{or1976oropt}
+Or I. Traveling Salesman-Type Combinatorial Problems and Their Relation to the Logistics of Regional Blood Banking[D]. Evanston: Northwestern University, 1976.
+
+\bibitem{shaw1998lns}
+Shaw P. Using Constraint Programming and Local Search Methods to Solve Vehicle Routing Problems[C]//\emph{International Conference on Principles and Practice of Constraint Programming (CP'98)}. Berlin: Springer, 1998: 417--431.
+
+\bibitem{ropke2006alns}
+Ropke S, Pisinger D. An Adaptive Large Neighborhood Search Heuristic for the Pickup and Delivery Problem with Time Windows[J]. \emph{Transportation Science}, 2006, 40(4): 455--472.
+
+% --- QUBO 求解 VRP / TSP 应用 ---
+\bibitem{warren2017tspqubo}
+Warren R H. Solving the Traveling Salesman Problem on a Quantum Annealer[J]. \emph{SN Applied Sciences}, 2020, 2: 75.
+
+\bibitem{feld2019cvrp}
+Feld S, Roch C, Gabor T, et al. A Hybrid Solution Method for the Capacitated Vehicle Routing Problem Using a Quantum Annealer[J]. \emph{Frontiers in ICT}, 2019, 6: 13.
+
+\bibitem{salehi2022vrpqubo}
+Salehi Ö, Glos A, Miszczak J A. Unconstrained binary models of the travelling salesman problem variants for quantum optimization[J]. \emph{Quantum Information Processing}, 2022, 21: 67.
+
+\bibitem{harwood2021vrptwqubo}
+Harwood S, Gambella C, Trenev D, et al. Formulating and Solving Routing Problems on Quantum Computers[J]. \emph{IEEE Transactions on Quantum Engineering}, 2021, 2: 3100417.
+
+% --- 题目原始资料 ---
+\bibitem{matorcup2026}
+2026 MathorCup 高校数学建模挑战赛组委会. A 题：基于量子计算的智慧物流路径规划[Z]. 2026.
+
+\bibitem{kaiwusdk2024}
+玻色量子. Kaiwu SDK 1.3.1 用户手册（含 SimulatedAnnealingOptimizer / CIMOptimizer / qubo\_matrix\_to\_ising\_matrix / adjust\_qubo\_matrix\_precision API 文档）[Z]. 2024.
+
+\end{thebibliography}
+
+\end{document}

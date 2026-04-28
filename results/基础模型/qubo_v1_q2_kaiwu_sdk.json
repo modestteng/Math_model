@@ -34,7 +34,7 @@
       "size_limit": 50,
       "rand_seed": 20260426
     },
-    "time_sec": 0.066,
+    "time_sec": 0.058,
     "n_feasible": 1,
     "n_unique": 50,
     "best_J": 389543.0,
@@ -69,7 +69,7 @@
       "n_seeds": 5,
       "base_seed": 20260426
     },
-    "time_sec": 3.855,
+    "time_sec": 4.353,
     "per_seed": [
       {
         "seed": 20260426,
@@ -349,7 +349,7 @@
     "scheme": "D · one-hot + 位置感知时间窗线性化",
     "max_diag_tw_penalty": 119196.80000000009,
     "ratio_max_tw_over_A_pen": 595.9840000000005,
-    "time_sec": 3.848,
+    "time_sec": 4.185,
     "per_seed": [
       {
         "seed": 20260426,

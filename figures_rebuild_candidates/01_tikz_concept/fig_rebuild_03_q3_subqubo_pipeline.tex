@@ -1,0 +1,79 @@
+% fig_rebuild_03_q3_subqubo_pipeline.tex
+% 候选图 3 / Q3 滚动窗口 subQUBO 流水线
+% 编译：xelatex fig_rebuild_03_q3_subqubo_pipeline.tex
+\documentclass[border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds,calc}
+
+\begin{document}
+\begin{tikzpicture}[
+    font=\small,
+    node distance=8mm and 9mm,
+    stage/.style={rectangle, draw=gray!70, fill=gray!8, rounded corners=2pt,
+                  minimum width=42mm, minimum height=10mm, align=center},
+    seg/.style ={rectangle, draw=blue!70, fill=blue!8, rounded corners=2pt,
+                  minimum width=32mm, minimum height=14mm, align=center, thick},
+    solver/.style={rectangle, draw=orange!85, fill=orange!10, rounded corners=2pt,
+                   minimum width=28mm, minimum height=10mm, align=center, thick},
+    eval/.style ={rectangle, draw=green!55!black, fill=green!10, rounded corners=2pt,
+                  minimum width=46mm, minimum height=11mm, align=center, thick},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, gray!70!black},
+    sidearrow/.style={-{Latex[length=2.4mm]}, dashed, orange!75!black},
+]
+
+% --- 阶段 1：完整路径 ---
+\node[stage] (full) {完整 50 客户路径 \\ {\small Python LNS warm start}};
+
+% --- 阶段 2：分段 ---
+\node[stage, below=10mm of full] (split)
+  {滚动窗口分解 (window = 17, stride = 17) \\
+   {\small full path 切为 3 段}};
+\draw[arrow] (full) -- (split);
+
+% --- 阶段 3：三段子 QUBO ---
+\node[seg, below=12mm of split, xshift=-58mm] (s1)
+  {seg 1 \\ 17 客户 \\ \textbf{289 比特}};
+\node[seg, right=of s1] (s2)
+  {seg 2 \\ 17 客户 \\ \textbf{289 比特}};
+\node[seg, right=of s2] (s3)
+  {seg 3 \\ 16 客户 \\ \textbf{256 比特}};
+\draw[arrow] (split) -- (s1);
+\draw[arrow] (split) -- (s2);
+\draw[arrow] (split) -- (s3);
+
+% --- 比特预算注 ---
+\node[align=left, font=\footnotesize, color=red!75!black]
+  at ($(s3.east)+(20mm,0)$)
+  {全段 $50^2=2500$ \\ 比特 $>550$ \\ \textbf{不可行}\\[2pt]
+   分段后 $\le 289$ \\ $< 550$ ✓};
+
+% --- 阶段 4：求解器（每段并行）---
+\node[solver, below=10mm of s1] (sol1) {SDK SA \\ + CIM 真机};
+\node[solver, below=10mm of s2] (sol2) {SDK SA \\ + CIM 真机};
+\node[solver, below=10mm of s3] (sol3) {SDK SA \\ + CIM 真机};
+\draw[arrow] (s1) -- (sol1);
+\draw[arrow] (s2) -- (sol2);
+\draw[arrow] (s3) -- (sol3);
+
+% --- 阶段 5：拼接回完整路径 ---
+\node[stage, below=12mm of sol2] (merge)
+  {拼接回 50 客户完整路径};
+\draw[arrow] (sol1.south) -- (merge.north west);
+\draw[arrow] (sol2.south) -- (merge.north);
+\draw[arrow] (sol3.south) -- (merge.north east);
+
+% --- 阶段 6：统一 evaluate ---
+\node[eval, below=8mm of merge] (eval)
+  {统一 \texttt{evaluate} 函数 \\
+   {\small 复算 travel + penalty $\Rightarrow J = 4{,}941{,}906$}};
+\draw[arrow] (merge) -- (eval);
+
+% --- 三方一致性输出 ---
+\node[stage, below=10mm of eval, fill=green!8, draw=green!55!black]
+  (cons) {三层一致：Python = SDK = CIM seg3 = 4{,}941{,}906};
+\draw[arrow] (eval) -- (cons);
+
+\end{tikzpicture}
+\end{document}

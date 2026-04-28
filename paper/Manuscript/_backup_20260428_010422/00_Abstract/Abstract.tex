@@ -1,0 +1,287 @@
+% =============================================================
+%  Abstract.tex —— 题目 / 摘要 / 关键词 / 问题重述 / 问题分析
+%                  / 模型假设 / 符号说明 / 数据说明与预处理
+%  目标：第 1 页只放题目 + 摘要 + 关键词；正文从第 2 页起；总页数 5--6 页。
+%  数据来源：results/、paper/章节/00_论文素材库_问题<X>.md、四问真机汇总
+%  编译方式：xelatex Abstract.tex
+% =============================================================
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds}
+\usepackage{float}
+\usepackage{caption}
+
+% 标题三号黑体居中；一级四号黑体居中；二三级小四黑体左对齐；正文小四宋体单倍行距
+\setCJKfamilyfont{hei}{SimHei}[AutoFakeBold]
+\renewcommand{\normalsize}{\fontsize{12pt}{14pt}\selectfont}     % 小四 ≈ 12pt
+\CTEXsetup[name={,},number={\arabic{section}},
+           format={\centering\CJKfamily{hei}\fontsize{14pt}{18pt}\selectfont},
+           beforeskip={1.0ex},afterskip={1.0ex}]{section}        % 一级 四号黑体居中
+\CTEXsetup[name={,},number={\thesubsection},
+           format={\raggedright\CJKfamily{hei}\fontsize{12pt}{14pt}\selectfont},
+           beforeskip={0.6ex},afterskip={0.4ex}]{subsection}     % 二级 小四黑体左对齐
+\CTEXsetup[name={,},number={\thesubsubsection},
+           format={\raggedright\CJKfamily{hei}\fontsize{12pt}{14pt}\selectfont},
+           beforeskip={0.4ex},afterskip={0.3ex}]{subsubsection}  % 三级 小四黑体左对齐
+
+\linespread{1.0}\selectfont
+\pagestyle{empty}                                  % 不要页眉页脚
+\setlength{\parskip}{0.2ex}
+
+\begin{document}
+
+% ---------- 第 1 页：题目 + 摘要 + 关键词 ----------
+\begin{center}
+{\CJKfamily{hei}\fontsize{16pt}{20pt}\selectfont
+基于 QUBO 与玻色 CPQC-550 相干伊辛机的智慧物流路径规划}
+\end{center}
+\vspace{0.6em}
+
+\noindent{\CJKfamily{hei}\fontsize{14pt}{18pt}\selectfont 摘\quad 要}
+\vspace{0.4em}
+
+针对智慧物流场景下的车辆路径规划问题，本文以\textbf{运输时间、时间窗惩罚与车辆使用数}为统一业务目标，按``\textbf{精确基线 $\rightarrow$ QUBO 建模 $\rightarrow$ Kaiwu SDK 模拟退火 $\rightarrow$ CIM 真机求解 $\rightarrow$ 大规模分解优化}''的思路，建立四阶递进的路径规划与量子求解框架，所有 QUBO 子问题均控制在 $\le 550$ 比特预算并经 8-bit 精度调整后上传玻色 CPQC-550 相干伊辛机。
+
+\textbf{问题一}（$n=15$ 单车 TSP）采用位置 one-hot 编码 $x_{i,p}\!\in\!\{0,1\}$ 构造 $n^{2}=225$ 比特 QUBO；Held-Karp 动态规划取得精确基线 $J=29$，SDK 模拟退火亦达 $J=29$，CIM 真机两次重测稳定收敛至 $J=31$（gap $+6.9\%$），完成小规模实例上的编码正确性与可解性验证。\textbf{问题二}（同规模 TSPTW）保持 225 比特 QUBO 仅承担路径排序子问题，时间窗惩罚 $P_i=M_1[a_i\!-\!t_i]_+^2+M_2[t_i\!-\!b_i]_+^2$ 由解码后统一 evaluate 函数计算并作为混合搜索的业务评价目标；Python LNS$+$SA、SDK SA、CIM 真机三方一致收敛至 $J=84121$（travel $=31$, penalty $=84090$），增强了结果鲁棒性的证据。
+
+\textbf{问题三}（$n=50$ 单车 TSPTW）若整体编码需 $50^{2}=2500$ 比特，超过 550 比特真机规模上限，故采用\textbf{滚动窗口分解}将路径切为 3 段子 TSP，每段 $\le 17^{2}=289$ 比特；子问题分别交 SDK SA 与 CIM 真机求解后，由统一 evaluate 函数对完整 50 客户路径重新评价，Python LNS、SDK SA、CIM 真机第 3 段均达到 $J=4{,}941{,}906$。\textbf{问题四}（$n=50$ 多车 CVRPTW，容量 $C=60$，总需求 $\sum d_i=271$ 给出下界 $K_{\min}=\lceil 271/60\rceil=5$）采用``\textbf{Clarke-Wright Savings 启发式分配 $+$ 每车独立子 TSP QUBO}''的分层编码（每子 QUBO $\le 8^{2}=64$ 比特），辅以跨车 LNS 与多 seed SA 元启发式；扫描 $K\!\in\![5,10]$ 取得最优车辆数 $K^{*}=7$，三方综合目标 $J=7149$（Python/SDK 一致）与 $J=7168$（CIM 真机，gap $+0.27\%$），$K=8$ block-diag 方案作为节省真机配额的补充验证。
+
+四问累计向 CPQC-550 真机提交 \textbf{12 次任务}，所有提交矩阵维度均 $\le 550$ 比特并经 8-bit 精度调整；SDK 与 CIM 返回解经统一 evaluate 函数解码后回到运输时间、时间窗惩罚与车辆数的真实业务量纲，避免``只展示能量''的失真表述。本文进一步给出 Q1 罚系数 $A\!\times\!T_0$ $5\!\times\!5$ 网格与 Q4 车辆数 $K$ 两类灵敏度分析，结果表明综合目标对超参选择稳健，模型、算法与代码均可复现。
+
+\vspace{0.6em}
+\noindent\textbf{关键词}：QUBO；相干伊辛机；Kaiwu SDK；车辆路径规划；软时间窗；大规模分解；K 灵敏度
+
+\newpage
+
+% =============================================================
+\section{问题重述}
+% =============================================================
+
+\subsection{问题背景}
+
+电商与即时配送的快速发展，使城市物流面临``客户规模大、时间窗严苛、车辆资源有限''的复合调度难题；与此同时，玻色量子推出的 CPQC-550 相干伊辛机（以下简称 CIM 真机）支持 $\le 550$ 个 Ising 自旋的 QUBO 求解，配套 Kaiwu SDK 提供模拟退火与真机算力的统一接口。本文不属于量子物理研究，而是以\textbf{智慧物流路径规划为应用背景}，研究在严格的量子比特预算下将路径规划转化为 QUBO，并通过 SDK 模拟退火与 CIM 真机进行求解与验证。
+
+\subsection{已知条件}
+
+题目附件给出 1 个配送中心（编号 0）与 50 个客户，关键参数汇总如表~\ref{tab:given}。
+
+\begin{table}[H]
+    \centering
+    \caption{题目已知条件汇总}
+    \label{tab:given}
+    \begin{tabular}{l l l}
+        \toprule
+        条目 & 取值 / 范围 & 备注 \\
+        \midrule
+        节点                  & 1 配送中心 $+$ 50 客户            & 编号 $0\sim50$ \\
+        需求量 $d_i$           & 整数，$\sum_{i=1}^{50}d_i=271$    & 仅 Q4 使用 \\
+        服务时间 $s_i$         & $s_i=2$（全部客户）               & Q2--Q4 使用 \\
+        时间窗 $[a_i,b_i]$     & 题目给定                          & Q2--Q4 使用 \\
+        旅行时间矩阵 $T$       & $51\!\times\!51$ 整数矩阵          & 对称，$T_{ii}=0$ \\
+        车辆容量 $C$          & $C=60$                            & 仅 Q4 \\
+        早到/晚到罚 $M_1,M_2$  & $M_1=10$，$M_2=20$               & 二次罚 \\
+        真机比特上限           & $\le 550$ 个 Ising 自旋           & CPQC-550 硬件约束 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{需要解决的问题}
+
+\begin{enumerate}
+    \item[\textbf{问题一}] 取前 15 个客户构成单车 TSP，不考虑时间窗与容量；建立路径模型并\textbf{在尽可能减少量子比特的前提下}转化为 QUBO，给出最优访问路线与总运输时间。
+    \item[\textbf{问题二}] 在前 15 个客户上引入软时间窗（早到/晚到二次罚），建立 TSPTW 并 QUBO 化，给出每个客户的实际开始服务时刻、违反程度、总运输时间与综合目标。
+    \item[\textbf{问题三}] 客户规模扩展至 50，仍为单车 TSPTW，要求由 Kaiwu SDK 或 CIM 真机求解；由于 $50^{2}=2500$ 比特远超 550 上限，需\textbf{设计大规模分解策略}使每个子 QUBO 不超过真机比特预算。
+    \item[\textbf{问题四}] 在 50 客户基础上引入车辆容量与多车协同，目标为``最小化车辆使用数 $+$ 总运输时间 $+$ 时间窗惩罚''；要求给出每辆车的路线、每客户违反程度、总运输时间，并通过\textbf{扫描车辆数 $K$} 分析其对总目标的影响。
+\end{enumerate}
+
+\subsection{本文建模目标}
+
+综合上述要求与 CIM 真机硬件约束，本文统一以\textbf{比特预算最小化}与\textbf{业务目标最优}为正交目标。需特别指出：QUBO 能量并不等于实际业务目标，因此本文规定\textbf{所有 SDK/CIM 返回的 bitstring 解必须经统一 evaluate 函数解码}，重新计算 travel、$P_i$、容量利用与 $J$，再与 Python 基线对比。
+
+% =============================================================
+\section{问题分析}
+% =============================================================
+
+\subsection{总体分析}
+
+四问构成规模与约束严格递增的车辆路径规划链：单车无约束 TSP（Q1）$\rightarrow$ 单车 TSPTW（Q2）$\rightarrow$ 大规模 TSPTW（Q3）$\rightarrow$ 多车 CVRPTW（Q4）。共性挑战是\textbf{在 550 比特硬件规模约束内将组合优化转化为 QUBO}，这意味着每一问都必须同时处理\textbf{业务目标}（travel $+$ TW 罚 $+$ 车辆数）与\textbf{量子比特目标}（编码维度 $\le 550$）。常规启发式可作为基线，但不能直接满足 QUBO 与真机求解要求；本文整体策略是``精确算法做基线、QUBO 做编码、SDK 做验证、CIM 做真机、分解做扩规模''。
+
+\subsection{各问关键分析}
+
+\textbf{问题一}：$n=15$ 单车 TSP 解空间为 $n!=1.31\!\times\!10^{12}$，仍在 Held-Karp 精确算法可解范围内。本文采用\textbf{位置 one-hot 编码} $x_{i,p}\!\in\!\{0,1\}$ 形成 $n^{2}=225$ 比特 QUBO，将位置约束以二次惩罚形式而非线性约束注入目标函数，从而构成本文\textbf{三层求解栈（Held-Karp / SDK SA / CIM）}的样板，重点验证 QUBO 编码在小规模下的正确性。
+
+\textbf{问题二}：时间窗约束 $[a_i,b_i]$ 是路径顺序的非线性函数（$t_i$ 由前序路径递推），强行展开为 $x_{i,p}$ 的二次形式将引入 $\mathcal{O}(n^{3})$ 量级辅助比特，违反 550 比特上限。因此本文采用\textbf{``QUBO 仅编码路径排序、时间窗惩罚由解码后 evaluate 函数计算''}的策略，使比特数从 Q1 起零增长；同时引入 LNS $+$ 多 seed SA 元启发式跳出 one-hot 的局部极小。
+
+\textbf{问题三}：$n=50$ 完整 one-hot 需 $50^{2}=2500$ 比特，远超 550 上限，无法上传亦无法在合理时间收敛。本文设计\textbf{滚动窗口分解}：以 $n_{\text{sub}}\!\le\!17$ 为窗宽切为 3 段，每段独立构造 $\le 17^{2}=289$ 比特子 TSP QUBO，由 SDK SA / CIM 真机求解后\textbf{合并回完整 50 客户路径}并由统一 evaluate 函数重新评价。需特别指出：分段 subQUBO 是局部优化器，不是完整全局 QUBO，最终业务目标仍以完整路径为准。
+
+\textbf{问题四}：直接 3D one-hot $x_{i,p,k}$ 需 $K\!\cdot\!n^{2}$ 比特（如 $K\!=\!5$ 时为 $12500$ 比特），不可行。本文采用``\textbf{Clarke-Wright Savings 做客户分配（启发式）$+$ 每车独立子 TSP QUBO}''的分层编码，每子 QUBO $\le 8^{2}=64$ 比特；车辆数与运输时间/时间窗惩罚之间的目标加权由综合目标 $J=\text{travel}+\sum P_i+M\!\cdot\!K$ 直接处理，并扫描 $K$ 给出 Pareto 前沿。$K=8$ 的 block-diag 一次提交方案作为\textbf{节省真机配额的补充验证策略}使用，不替代主分层模型本身。
+
+\subsection{总体技术路线}
+
+按``数据预处理 $\rightarrow$ Q1 单车 TSP $\rightarrow$ Q2 TSPTW $\rightarrow$ Q3 大规模分段 $\rightarrow$ Q4 多车 CVRPTW $\rightarrow$ 三层对比 $\rightarrow$ 灵敏度分析 $\rightarrow$ 结论''展开建模，技术路线如图~\ref{fig:overview}。图中纵向自上而下为规模与约束的递进，横向为从精确基线到 QUBO/SDK/CIM 的算法演进，二者交织构成本文四问的统一求解框架。
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        font=\footnotesize,
+        node distance=4mm and 5mm,
+        data/.style={rectangle, draw=gray!70, fill=gray!10, rounded corners=2pt,
+                     minimum width=22mm, minimum height=7mm, align=center},
+        model/.style={rectangle, draw=blue!70, fill=blue!8, rounded corners=2pt,
+                      minimum width=26mm, minimum height=9mm, align=center},
+        algo/.style={rectangle, draw=orange!80, fill=orange!12, rounded corners=2pt,
+                     minimum width=80mm, minimum height=8mm, align=center},
+        outbox/.style={rectangle, draw=green!50!black, fill=green!10, rounded corners=2pt,
+                    minimum width=24mm, minimum height=7mm, align=center},
+        arrow/.style={-{Latex[length=2mm]}, thick, gray!70!black},
+        sidearrow/.style={-{Latex[length=2mm]}, dashed, orange!70!black}
+    ]
+        \node[data] (raw) {题目附件\\(节点$+$时间矩阵)};
+        \node[data, right=of raw] (pre) {数据预处理\\(load\_data + evaluate)};
+        \node[model, below=of raw, xshift=18mm] (q1) {Q1: 单车 TSP\\225 比特};
+        \node[model, right=of q1] (q2) {Q2: TSPTW\\225 比特$+$软罚};
+        \node[model, below=of q1] (q3) {Q3: 大规模 TSPTW\\滚动分段 $\le 289$};
+        \node[model, right=of q3] (q4) {Q4: 多车 CVRPTW\\每车 $\le 64$};
+        \node[algo, below=of q3, xshift=18mm] (alg) {三层求解栈：Python 基线 $\to$ Kaiwu SDK SA $\to$ CIM 真机（$\le 550$ 比特, 8-bit）};
+        \node[outbox, below=of alg, xshift=-26mm] (sens) {灵敏度分析\\Q1: $A\!\times\!T_0$；Q4: $K$};
+        \node[outbox, right=of sens] (cmp) {三层对比$+$哈密顿量曲线};
+        \node[outbox, right=of cmp] (concl) {结论 $+$ 模型评价};
+        \draw[arrow] (raw) -- (pre);
+        \draw[arrow] (pre) |- (q1);
+        \draw[arrow] (pre) |- (q2);
+        \draw[arrow] (q1) -- (q2);
+        \draw[arrow] (q1) -- (q3);
+        \draw[arrow] (q2) -- (q4);
+        \draw[arrow] (q3) -- (q4);
+        \draw[arrow] (q3) |- (alg);
+        \draw[arrow] (q4) |- (alg);
+        \draw[arrow] (q1) to[bend right=55] (alg);
+        \draw[arrow] (q2) to[bend left=40] (alg);
+        \draw[arrow] (alg) -- (sens);
+        \draw[arrow] (alg) -- (cmp);
+        \draw[arrow] (alg) -- (concl);
+        \draw[sidearrow] (sens) -- (concl);
+        \draw[sidearrow] (cmp)  -- (concl);
+    \end{tikzpicture}
+    \caption{本文总体技术路线：从题目数据到四问模型，经三层求解栈（Python/SDK/CIM）汇总至灵敏度分析与结论。}
+    \label{fig:overview}
+\end{figure}
+
+% =============================================================
+\section{模型假设}
+% =============================================================
+
+\begin{enumerate}
+    \item[(1)] \textbf{数据原样使用}：题目附件给出的节点属性、时间窗 $[a_i,b_i]$ 与旅行时间矩阵 $T$ 直接采用，不做外部修正、平滑或重新生成。
+    \item[(2)] \textbf{车辆同质}：所有车辆性能一致、行驶速度恒定，均从配送中心出发并返回；$T_{ij}$ 不随时段或载重变化。
+    \item[(3)] \textbf{无空闲等待}：车辆抵达客户 $i$ 即开始服务，若早于 $a_i$ 仍按抵达时刻计算早到罚而不在前序节点等待，从而 $t_i$ 由路径序列唯一递推。
+    \item[(4)] \textbf{时间窗为软约束}：早到与晚到不被拒服，但按题目给定二次罚 $P_i=M_1[a_i\!-\!t_i]_+^2+M_2[t_i\!-\!b_i]_+^2$ 计入综合目标，$M_1=10$、$M_2=20$ 全文不变。
+    \item[(5)] \textbf{容量约束按问启用}：Q1--Q3 不显式考虑容量，Q4 启用单车容量 $C=60$，并要求每条路线 $\sum d_i\!\le\!C$。
+    \item[(6)] \textbf{统一解码与评价}：所有 Python / SDK / CIM 求得的 bitstring 解，均经相同解码、修复（2-opt/Or-opt）与统一 evaluate 函数评价，以保证三层结果可比。
+\end{enumerate}
+
+\noindent 关于求解器的随机性：本文将 SDK SA 与 CIM 真机的多次运行用于\textbf{观察求解稳定性}，不作严格统计推断；真机返回解经相同解码与 polish 流程处理，以保证三层结果在统一业务量纲下可比。
+
+% =============================================================
+\section{符号说明}
+% =============================================================
+
+为消除记号冲突（服务时间 $s_i$ 与 Ising 自旋同字母），本文严格区分：服务时间用 $s_i$，Ising 自旋用 $\sigma_l\!\in\!\{-1,+1\}$；并按``业务模型''与``QUBO/Ising''分两表列示主要符号，其余符号在首次出现时再行释义。
+
+\begin{table}[H]
+    \centering
+    \caption{业务模型符号}
+    \label{tab:sym-biz}
+    \begin{tabular}{c l l}
+        \toprule
+        符号 & 含义 & 单位 / 说明 \\
+        \midrule
+        $\mathcal V$  & 节点集合 $\{0,1,\dots,n\}$，$0$ 为配送中心 & -- \\
+        $\mathcal C$  & 客户集合 $\mathcal V\setminus\{0\}$         & -- \\
+        $\mathcal K$  & 车辆集合 $\{1,\dots,K\}$（仅 Q4）           & -- \\
+        $K$           & 车辆数（仅 Q4）                              & 整数 \\
+        $i,j$         & 节点索引                                     & -- \\
+        $p$           & 路径位置索引（one-hot 编码）                  & -- \\
+        $k$           & 车辆索引（仅 Q4）                            & -- \\
+        $T_{ij}$      & 节点 $i$ 到 $j$ 的旅行时间                   & 时间单位 \\
+        $d_i$         & 客户 $i$ 的需求量（仅 Q4）                   & 单位货量 \\
+        $C$           & 单车容量（仅 Q4）                            & $C=60$ \\
+        $s_i$         & 客户 $i$ 的服务时间                           & $s_i=2$ \\
+        $[a_i,b_i]$   & 客户 $i$ 的时间窗（Q2--Q4）                  & 时间单位 \\
+        $M_1,M_2$     & 早到 / 晚到二次罚系数                        & $10$，$20$ \\
+        $M$           & 车辆使用惩罚系数（仅 Q4）                    & 标定系数 \\
+        $t_i$         & 客户 $i$ 的实际服务开始时刻                   & 时间单位 \\
+        $P_i$         & $M_1[a_i\!-\!t_i]_+^2+M_2[t_i\!-\!b_i]_+^2$  & 时间窗罚 \\
+        $J$           & 综合目标 $=\,$travel$\,+\sum P_i$ ($+\,M\!\cdot\!K$，仅 Q4) & 加权和 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{QUBO / Ising 符号}
+    \label{tab:sym-qubo}
+    \begin{tabular}{c l l}
+        \toprule
+        符号 & 含义 & 说明 \\
+        \midrule
+        $x_{i,p}$        & 客户 $i$ 是否在路径第 $p$ 位（Q1--Q3 one-hot）   & $\{0,1\}$ \\
+        $y_{ik}$         & 客户 $i$ 是否分配给车 $k$（Q4，启发式定）        & $\{0,1\}$ \\
+        $\pi^{k}$        & 车 $k$ 的访问序列                               & 决策变量 \\
+        $H(\mathbf{x})$  & QUBO 哈密顿量（罚项 $+$ 路径项）                 & -- \\
+        $A$              & one-hot 约束二次罚系数                            & 基线 200 \\
+        $n_{\rm var}$    & QUBO 二进制变量数                                & Q1/Q2 $=225$；Q3 子 $\le 289$；Q4 子 $\le 64$ \\
+        $n_{\rm Ising}$  & Ising 自旋数（含 1 个辅助自旋）                  & $n_{\rm var}+1\le 550$ \\
+        $\sigma_l$       & Ising 自旋 (CIM 真机基本单元)                   & $\sigma_l\!\in\!\{-1,+1\}$ \\
+        $T_0,\alpha$     & SA 初始温度 / 降温率                             & $100$，$0.99$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% =============================================================
+\section{数据说明与预处理}
+% =============================================================
+
+\subsection{数据来源与字段}
+
+本文所有建模数据来自题目附件 \texttt{参考算例.xlsx}（项目根目录只读），由 \texttt{\_q\_lib.load\_data} 一处统一读入，确保四问数据口径一致：Sheet1 为 51 行节点属性表（编号 $0$ 为配送中心，$1\!\sim\!50$ 为客户），关键字段含 \textit{tw\_a/tw\_b}（时间窗 $[a_i,b_i]$）、\textit{service}（$s_i$，全部为 $2$）、\textit{demand}（$d_i$，整数，$\sum d_i=271$）、\textit{capacity}（仅 depot 行有效，$C=60$）；Sheet2 为 $51\!\times\!51$ 整数旅行时间矩阵，$T_{ii}=0$。\textbf{未引入任何外部数据。}
+
+\subsection{数据校验与预处理}
+
+\begin{itemize}
+    \item \textbf{缺失值}：节点属性 51 行 $\times$ 6 列、旅行矩阵 $51^{2}=2601$ 元，经程序全量检查缺失计数均为 0；
+    \item \textbf{对角线}：$T_{ii}=0$ 对全部 51 个 $i$ 成立，非对角元 $T_{ij}>0$；
+    \item \textbf{对称性}：本文直接使用题目给定旅行时间矩阵，不额外假设欧氏距离；矩阵的对称性由题目数据本身保证；
+    \item \textbf{时间窗合法性}：50 个客户均满足 $a_i<b_i$ 且 $a_i\ge 0$，与服务时间 $s_i=2$ 兼容（具体窗宽分布详见附录与素材库）；
+    \item \textbf{容量自洽}：$\sum_{i=1}^{50}d_i=271$、$C=60$，得 $K_{\min}=\lceil 271/60\rceil=5$，与题目隐含的多车设定一致；$\max d_i<C$，无单客户超载异常。
+\end{itemize}
+
+\noindent\textbf{量纲与精度}：综合目标 $J=\text{travel}+\sum P_i\,(+M\!\cdot\!K)$ 各项均以时间单位为统一量纲，本文按题目给定惩罚系数直接计算综合目标，不再对原始时间和惩罚项作额外归一化。仅在 QUBO 矩阵上传 CIM 真机前，调用 \texttt{adjust\_qubo\_matrix\_precision(Q,bit\_width=8)} 做\textbf{8-bit 精度调整}以满足真机耦合系数位宽要求；为避免量化偏差，真机返回解统一解码后用原始业务目标重新评价。
+
+\subsection{四问数据规模分级}
+
+\begin{table}[H]
+    \centering
+    \caption{四问数据规模与启用字段}
+    \label{tab:scale}
+    \begin{tabular}{c c c c c}
+        \toprule
+        问题 & $n$ & 时间矩阵尺寸 & 时间窗 & 容量 \\
+        \midrule
+        Q1 & 15 & $16\!\times\!16$ & 不使用 & 不使用 \\
+        Q2 & 15 & $16\!\times\!16$ & 使用   & 不使用 \\
+        Q3 & 50 & $51\!\times\!51$ & 使用   & 不使用 \\
+        Q4 & 50 & $51\!\times\!51$ & 使用   & $C=60$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+四问均由统一 \texttt{load\_data($n$)} 与 \texttt{evaluate} 函数读取与评价，避免不同问题口径不一致；后续 §6$\sim$§9 四问模型的所有结果（路径、$t_i$、$P_i$、$J$）均可由该数据集与本文脚本无歧义复算。
+
+\end{document}

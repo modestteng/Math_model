@@ -1,0 +1,70 @@
+% fig_rebuild_01_overall_framework.tex
+% 候选图 1 / 总体技术路线（替换 main.tex L138 的内嵌 tikzpicture）
+% 编译：xelatex fig_rebuild_01_overall_framework.tex
+\documentclass[border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds,calc}
+
+\begin{document}
+\begin{tikzpicture}[
+    font=\small,
+    node distance=6mm and 9mm,
+    data/.style    ={rectangle,draw=gray!70,    fill=gray!8,   rounded corners=2pt,
+                     minimum width=30mm,minimum height=8mm,align=center},
+    model/.style   ={rectangle,draw=blue!75,    fill=blue!6,   rounded corners=2pt,
+                     minimum width=42mm,minimum height=11mm,align=center,thick},
+    solver/.style  ={rectangle,draw=orange!85,  fill=orange!8, rounded corners=2pt,
+                     minimum width=44mm,minimum height=10mm,align=center,thick},
+    outbox/.style  ={rectangle,draw=green!55!black,fill=green!8,rounded corners=2pt,
+                     minimum width=32mm,minimum height=8mm,align=center},
+    arrow/.style   ={-{Latex[length=2.4mm]},thick,gray!70!black},
+    sidearrow/.style={-{Latex[length=2.4mm]},dashed,orange!75!black},
+]
+% --- 数据层 ---
+\node[data] (raw)  {题目附件 \\ 节点 + 时间矩阵 $T$};
+\node[data, right=14mm of raw] (pre) {数据预处理 \\ \texttt{load\_data} + \texttt{evaluate}};
+\draw[arrow] (raw) -- (pre);
+
+% --- 模型层（4 问横排）---
+\node[model, below=12mm of $(raw)!0.5!(pre)$, xshift=-46mm] (q1)
+  {\textbf{Q1: 单车 TSP} \\ $n=15$, 225 比特};
+\node[model, right=of q1] (q2)
+  {\textbf{Q2: TSPTW} \\ 225 比特 + 软罚};
+\node[model, right=of q2] (q3)
+  {\textbf{Q3: 大规模 TSPTW} \\ 滚动分解 $\le 289$};
+\node[model, right=of q3] (q4)
+  {\textbf{Q4: 多车 CVRPTW} \\ 每车 $\le 64$};
+\foreach \n in {q1,q2,q3,q4}
+  \draw[arrow] (pre) |- (\n);
+\draw[arrow] (q1) -- (q2);
+\draw[arrow] (q2) -- (q3);
+\draw[arrow] (q3) -- (q4);
+
+% --- 求解层（三层求解栈，并列）---
+\node[solver, below=12mm of q1] (py)  {Python 基线 \\ Held-Karp / LNS / SA};
+\node[solver, below=12mm of q2] (sdk) {Kaiwu SDK SA \\ ($\le 549$ 维 QUBO)};
+\node[solver, below=12mm of q3] (cim) {CIM CPQC-550 真机 \\ 8-bit, $\le 550$ 比特};
+\node[solver, below=12mm of q4] (eval){统一 \texttt{evaluate} \\ travel + penalty + $K$};
+\draw[arrow] (q1.south) -- (py.north);
+\draw[arrow] (q2.south) -- (sdk.north);
+\draw[arrow] (q3.south) -- (cim.north);
+\draw[arrow] (q4.south) -- (eval.north);
+\draw[sidearrow] (py.east)  -- (sdk.west);
+\draw[sidearrow] (sdk.east) -- (cim.west);
+\draw[sidearrow] (cim.east) -- (eval.west);
+
+% --- 输出层 ---
+\node[outbox, below=11mm of py]   (sens) {灵敏度分析 \\ Q1: $A\!\times\!T_0$ \,\, Q4: $K$};
+\node[outbox, below=11mm of sdk]  (cmp)  {三层一致性 \\ + 哈密顿量分布};
+\node[outbox, below=11mm of cim]  (rep)  {可复现性 \\ JSON / CSV / log};
+\node[outbox, below=11mm of eval] (cc)   {结论 + 模型评价};
+\draw[arrow] (py)   -- (sens);
+\draw[arrow] (sdk)  -- (cmp);
+\draw[arrow] (cim)  -- (rep);
+\draw[arrow] (eval) -- (cc);
+\draw[arrow] (sens) -- (cc);
+\draw[arrow] (cmp)  -- (cc);
+\draw[arrow] (rep)  -- (cc);
+\end{tikzpicture}
+\end{document}

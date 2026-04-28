@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(PYTHONIOENCODING=utf-8 xelatex -interaction=nonstopmode -halt-on-error Question3.tex)"
+    ],
+    "additionalDirectories": [
+      "d:\\Projects\\Math_model\\paper\\Manuscript\\02_Question2",
+      "D:\\Projects\\Math_model\\paper\\Manuscript\\03_Question3",
+      "d:\\Projects\\Math_model\\paper\\Manuscript\\04_Question4",
+      "D:\\Projects\\Math_model\\paper\\Manuscript\\Four_question",
+      "d:\\Projects\\Math_model\\paper\\Manuscript\\10_Sensitivity",
+      "D:\\Projects\\Math_model\\paper\\Manuscript\\11_Evaluation",
+      "D:\\Projects\\Math_model\\paper\\Manuscript\\12_Conclusion",
+      "D:\\Projects\\Math_model\\paper\\Manuscript",
+      "d:\\Projects\\Math_model\\paper\\Manuscript\\00_Abstract"
+    ]
+  }
+}

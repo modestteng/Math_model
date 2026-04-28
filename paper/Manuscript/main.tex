@@ -1,0 +1,996 @@
+% =============================================================
+%  main.tex —— 国奖目标版（合并稿，正文 12.3 控制在 22 页内）
+%  编译方式：xelatex main.tex   或   latexmk -xelatex main.tex
+% =============================================================
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{top=2.3cm,bottom=2.3cm,left=2.3cm,right=2.3cm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small,labelsep=quad,skip=2pt}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=2em}
+\usepackage{titlesec}
+\usepackage{placeins}
+\graphicspath{%
+  {../../figures/}%
+  {../../figures_rebuild_candidates/02_python_result_figures/}%
+  {../../figures_rebuild_candidates/01_tikz_concept/}%
+}
+
+% ---------- 字体与版式（按附件 1 论文格式规范严格设置）----------
+% 题目三号黑体居中；一级标题四号黑体居中；二级/三级小四黑体左对齐；正文小四宋体；单倍行距；无页眉
+\setCJKfamilyfont{hei}{SimHei}[AutoFakeBold]
+\renewcommand{\normalsize}{\zihao{-4}\selectfont}
+\CTEXsetup[name={,},number={\arabic{section}},
+           format={\centering\CJKfamily{hei}\zihao{4}\selectfont},
+           beforeskip={0.6ex},afterskip={0.4ex}]{section}
+\CTEXsetup[name={,},number={\thesubsection},
+           format={\raggedright\CJKfamily{hei}\zihao{-4}\selectfont},
+           beforeskip={0.4ex},afterskip={0.2ex}]{subsection}
+\CTEXsetup[name={,},number={\thesubsubsection},
+           format={\raggedright\CJKfamily{hei}\zihao{-4}\selectfont},
+           beforeskip={0.3ex},afterskip={0.2ex}]{subsubsection}
+
+\linespread{1.0}\selectfont
+\pagestyle{plain}             % 无页眉；保留页脚页码
+\setlength{\parskip}{0.1ex}
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+\setlength{\abovedisplayshortskip}{2pt}
+\setlength{\belowdisplayshortskip}{2pt}
+\setlength{\textfloatsep}{4pt plus 1pt minus 1pt}
+\setlength{\floatsep}{4pt plus 1pt minus 1pt}
+\setlength{\intextsep}{4pt plus 1pt minus 1pt}
+
+% hyperref 必须放在最后
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+% =============================================================
+%  第 1 页：题目 + 摘要 + 关键词（按附件 1：第一页仅含题目、摘要、关键词）
+% =============================================================
+\begin{center}
+{\CJKfamily{hei}\zihao{3}\selectfont
+基于 QUBO 与玻色 CPQC-550 相干伊辛机的智慧物流路径规划}
+\end{center}
+\vspace{0.3em}
+
+\begin{center}
+{\CJKfamily{hei}\zihao{4}\selectfont 摘\quad 要}
+\end{center}
+
+针对智慧物流场景下的车辆路径规划问题，本文以\textbf{运输时间、时间窗惩罚与车辆使用数}为统一业务目标，按``\textbf{精确基线 $\rightarrow$ QUBO 建模 $\rightarrow$ Kaiwu SDK 模拟退火 $\rightarrow$ CIM 真机求解 $\rightarrow$ 大规模分解优化}''建立四阶递进框架，所有 QUBO 子问题均控制在 $\le 550$ 比特并经 8-bit 精度调整后上传玻色 CPQC-550 相干伊辛机。
+
+\textbf{问题一}（$n=15$ 单车 TSP）采用位置 one-hot 编码 $x_{i,p}\!\in\!\{0,1\}$ 构造 $n^{2}=225$ 比特 QUBO；Held-Karp 动态规划取得精确基线 $J=29$，SDK 模拟退火亦达 $J=29$，CIM 真机收敛至 $J=31$（gap $+6.9\%$），完成小规模上的编码正确性与真机链路可行性验证。
+
+\textbf{问题二}（同规模 TSPTW）保持 225 比特 QUBO 仅承担路径排序，时间窗惩罚 $P_i=M_1[a_i\!-\!t_i]_+^2+M_2[t_i\!-\!b_i]_+^2$ 由解码后统一 evaluate 函数计算并作为业务评价目标；Python LNS$+$SA、SDK SA、CIM 真机三方均得 $J=84121$（travel $=31$, penalty $=84090$），作为本实例的近似最优可行解。
+
+\textbf{问题三}（$n=50$ 单车 TSPTW）若整体编码需 $50^{2}=2500$ 比特，超出 550 比特真机上限，故采用\textbf{滚动窗口分解}将路径切为 3 段，每段 $\le 17^{2}=289$ 比特；子问题分别交 SDK SA 与 CIM 真机求解后，由统一 evaluate 函数对完整 50 客户路径回评，Python LNS、SDK SA、CIM 真机 seg3 三方一致达 $J=4{,}941{,}906$。
+
+\textbf{问题四}（$n=50$ 多车 CVRPTW，容量 $C=60$，总需求 $\sum d_i=271$ 给出下界 $K_{\min}=\lceil 271/60\rceil=5$）采用``Clarke-Wright Savings 启发式分配 $+$ 每车独立子 TSP QUBO''分层编码（每子 QUBO $\le 8^{2}=64$ 比特），辅以跨车 LNS 与多 seed SA；扫描 $K\!\in\![5,10]$ 取得最优 $K^{*}=7$，三方综合目标 $J=7149$（Python/SDK 一致）与 $J=7168$（CIM 真机，gap $+0.27\%$），$K=8$ block-diag 方案作为节省真机配额的补充验证。
+
+四问累计向 CPQC-550 真机提交 \textbf{12 次任务}，所有提交矩阵维度均 $\le 550$ 比特并经 8-bit 精度调整；SDK 与 CIM 返回解经统一 evaluate 函数解码后回到运输时间、时间窗惩罚与车辆数的真实业务量纲，避免``只展示能量''的失真。本文进一步给出 Q1 罚系数 $A\!\times\!T_0$ $5\!\times\!5$ 网格与 Q4 车辆数 $K$ 两类灵敏度分析，结果表明综合目标对超参选择稳健，模型、算法与代码均可复现。
+
+\vspace{0.3em}
+\noindent\textbf{关键词}：QUBO；相干伊辛机；Kaiwu SDK；车辆路径规划；软时间窗；大规模分解；K 灵敏度
+
+\newpage
+
+% =============================================================
+\section{问题重述}
+% =============================================================
+
+\subsection{问题背景}
+
+电商与即时配送的快速发展使城市物流面临``客户规模大、时间窗严苛、车辆资源有限''的复合调度难题；玻色 CPQC-550 相干伊辛机\cite{boson2024cpqc,yamamoto2017cim,honjo2021cim2000}支持 $\le 550$ 个 Ising 自旋的 QUBO 求解，配套 Kaiwu SDK\cite{kaiwusdk2024}提供模拟退火与真机算力的统一接口。本文以\textbf{智慧物流路径规划}为应用背景，在严格的量子比特预算下将路径规划转化为 QUBO，并通过 SDK 模拟退火与 CIM 真机求解与验证。
+
+\subsection{已知条件}
+
+题目附件给出 1 个配送中心（编号 0）与 50 个客户，关键参数汇总如表~\ref{tab:given}。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{题目已知条件汇总}
+    \label{tab:given}
+    \begin{tabular}{l l l}
+        \toprule
+        条目 & 取值 / 范围 & 备注 \\
+        \midrule
+        节点 & 1 配送中心 $+$ 50 客户 & 编号 $0\sim50$ \\
+        需求量 $d_i$ & 整数，$\sum_{i=1}^{50}d_i=271$ & 仅 Q4 \\
+        服务时间 $s_i$ & $s_i=2$ 全部客户 & Q2--Q4 \\
+        时间窗 $[a_i,b_i]$ & 题目给定 & Q2--Q4 \\
+        旅行时间矩阵 $T$ & $51\!\times\!51$ 整数对称矩阵 $T_{ii}=0$ & 全文 \\
+        车辆容量 $C$ & $C=60$ & 仅 Q4 \\
+        早到/晚到罚 $M_1,M_2$ & $M_1=10$，$M_2=20$ & 二次罚 \\
+        真机比特上限 & $\le 550$ Ising 自旋 & CPQC-550 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{需要解决的问题}
+
+\textbf{问题一}：取前 15 个客户构成单车 TSP（不含时间窗与容量），建立路径模型并\textbf{在尽可能减少量子比特的前提下}转化为 QUBO，给出最优访问路线与总运输时间。\textbf{问题二}：在前 15 个客户上引入软时间窗（早到/晚到二次罚），建立 TSPTW 并 QUBO 化，给出每客户实际开始时刻、违反程度、总运输时间与综合目标。\textbf{问题三}：客户规模扩展至 50，仍为单车 TSPTW；由于 $50^{2}=2500$ 比特远超 550 上限，需\textbf{设计大规模分解策略}使每个子 QUBO 不超过真机比特预算。\textbf{问题四}：在 50 客户基础上引入车辆容量与多车协同，目标``最小化车辆数 $+$ 总运输时间 $+$ 时间窗惩罚''；要求给出每车路线、每客户违反程度、总运输时间，并通过\textbf{扫描 $K$} 分析其对总目标的影响。
+
+% =============================================================
+\section{问题分析}
+% =============================================================
+
+四问构成规模与约束严格递增的车辆路径规划链：\textbf{TSP$\to$TSPTW$\to$大规模 TSPTW$\to$多车 CVRPTW}。共性挑战是\textbf{在 550 比特硬件规模约束内将组合优化转化为 QUBO}，每问都必须同时处理\textbf{业务目标}（travel $+$ TW 罚 $+$ 车辆数）与\textbf{量子比特目标}（编码维度 $\le 550$）。各问关键分析见表~\ref{tab:prob-analysis}。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{四问关键分析对照}
+    \label{tab:prob-analysis}
+    \begin{tabularx}{\textwidth}{c X X X}
+        \toprule
+        问题 & 数学本质 & 新增难点 & 本文策略 \\
+        \midrule
+        Q1 & 单车 TSP，$n=15$ & 编码与 QUBO/Ising 链路 & one-hot $n^2=225$ 比特$+$Held-Karp 基线$+$SDK/CIM \\
+        Q2 & TSPTW，$n=15$ 软时间窗 & 时间窗为路径累计时间的非线性函数 & 仅 QUBO 编排序，TW 罚由解码后 evaluate 回评 \\
+        Q3 & TSPTW，$n=50$ & $n^2=2500$ 远超 550 比特 & 滚动窗口分 3 段子 QUBO（$\le 289$）$+$拼接回评 \\
+        Q4 & CVRPTW，$K\ge 5$ & $K\!\cdot\!n^2$ 全 3D 编码$\sim 10^4$ 比特不可行 & Savings 分配$+$每车独立 $\le 64$ 比特子 QUBO$+K$ 扫描 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+四问构成由易到难的递进链：Q1 仅含路径排序，用于验证 one-hot 编码、QUBO/Ising 转换与 SDK/CIM 链路在 $n=15$ 小规模下的正确性；Q2 在同规模上引入软时间窗，揭示``QUBO 能量与业务目标分离''这一关键机制并被后续两问沿用；Q3 把 $n$ 推到 50，$n^{2}=2500$ 远超 550 比特预算，迫使本文设计滚动窗口分解 + 子 QUBO 拼接 + 完整路径 evaluate 回评的混合流程；Q4 在 50 客户上引入容量与多车协同，决策空间扩为$\{y_{i,k}\}\!\cup\!\{x_{i,p,k}\}$，需进一步把全 3D 编码降阶为``启发式分配 + 每车 $\le 64$ 比特子 QUBO''。本文同时将\textbf{业务可行解}（满足覆盖、容量与时间窗复算）与\textbf{真机可提交性}（子 QUBO ising 维度 $\le 550$ 并经 8-bit 精度调整）作为两条正交目标贯穿四问，避免``为漂亮数值牺牲真机链路''或``为满足比特预算牺牲业务最优''任一倾向。
+
+总体技术路线如图~\ref{fig:overview}：纵向自上而下为规模与约束递进，横向为从精确基线到 QUBO/SDK/CIM 算法演进。
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        font=\scriptsize, node distance=4mm and 5mm,
+        data/.style={rectangle, draw=gray!70, fill=gray!10, rounded corners=2pt,
+                     minimum width=22mm, minimum height=6mm, align=center},
+        model/.style={rectangle, draw=blue!70, fill=blue!8, rounded corners=2pt,
+                      minimum width=26mm, minimum height=7mm, align=center},
+        algo/.style={rectangle, draw=orange!80, fill=orange!12, rounded corners=2pt,
+                     minimum width=80mm, minimum height=7mm, align=center},
+        outbox/.style={rectangle, draw=green!50!black, fill=green!10, rounded corners=2pt,
+                    minimum width=24mm, minimum height=6mm, align=center},
+        arrow/.style={-{Latex[length=1.5mm]}, thick, gray!70!black}
+    ]
+        \node[data] (raw) {题目附件};
+        \node[data, right=of raw] (pre) {load\_data + evaluate};
+        \node[model, below=of raw, yshift=-1mm, xshift=15mm] (q1) {Q1: TSP\,225};
+        \node[model, right=of q1] (q2) {Q2: TSPTW\,225};
+        \node[model, below=of q1, yshift=-1mm] (q3) {Q3: 分段$\le$289};
+        \node[model, right=of q3] (q4) {Q4: 每车$\le$64};
+        \node[algo, below=of q3, yshift=-1mm, xshift=15mm] (alg) {三层求解栈：Python 基线 $\to$ Kaiwu SDK SA $\to$ CIM 真机（$\le 550$ 比特, 8-bit）};
+        \node[outbox, below=of alg, yshift=-1mm, xshift=-28mm] (sens) {灵敏度: $A\!\times\!T_0$, $K$};
+        \node[outbox, right=of sens] (cmp) {三层对比};
+        \node[outbox, right=of cmp] (concl) {结论与评价};
+        \draw[arrow] (raw) -- (pre);
+        \draw[arrow] (raw.south) -- (q1.north);
+        \draw[arrow] (pre.south) -- (q2.north);
+        \draw[arrow] (q1) -- (q2); \draw[arrow] (q1) -- (q3);
+        \draw[arrow] (q2) -- (q4); \draw[arrow] (q3) -- (q4);
+        \draw[arrow] (q3.south) -- ([xshift=-18mm]alg.north);
+        \draw[arrow] (q4.south) -- ([xshift=18mm]alg.north);
+        \draw[arrow] ([xshift=-26mm]alg.south) -- (sens.north);
+        \draw[arrow] (alg.south) -- (cmp.north);
+        \draw[arrow] ([xshift=26mm]alg.south) -- (concl.north);
+    \end{tikzpicture}
+    \caption{本文总体技术路线：从题目数据到四问模型，经三层求解栈汇总至灵敏度分析与结论。}
+    \label{fig:overview}
+\end{figure}
+
+% =============================================================
+\section{模型假设}
+% =============================================================
+
+(1) \textbf{数据原样使用}：题目附件节点属性、$[a_i,b_i]$ 与 $T$ 直接采用；
+(2) \textbf{车辆同质}：所有车辆性能一致，从配送中心出发并返回，$T_{ij}$ 不随时段或载重变化；
+(3) \textbf{无空闲等待}：抵达即开始服务，早到立即服务并按早到量计罚；
+(4) \textbf{时间窗为软约束}：$P_i=M_1[a_i\!-\!t_i]_+^2+M_2[t_i\!-\!b_i]_+^2$，$M_1=10,M_2=20$；
+(5) \textbf{容量按问启用}：Q1--Q3 不显式考虑，Q4 启用 $C=60$；
+(6) \textbf{统一解码评价}：所有 Python/SDK/CIM 解经相同解码、修复（2-opt/Or-opt）与统一 evaluate 评价。
+
+% =============================================================
+\section{符号说明}
+% =============================================================
+
+为消除记号冲突，服务时间用 $s_i$，Ising 自旋用 $\sigma_l\!\in\!\{-1,+1\}$。主要符号见表~\ref{tab:sym}，低频符号在首次出现处释义。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{业务模型与 QUBO/Ising 主要符号}
+    \label{tab:sym}
+    \begin{tabular}{c l c l}
+        \toprule
+        符号 & 含义 & 符号 & 含义 \\
+        \midrule
+        $\mathcal V/\mathcal C/\mathcal K$ & 节点/客户/车辆集合 & $x_{i,p}$ & 客户 $i$ 在第 $p$ 位（Q1--Q3） \\
+        $K$ & 车辆数（仅 Q4） & $y_{i,k}$ & 客户 $i$ 是否分配给车 $k$（Q4） \\
+        $T_{ij}$ & 节点 $i\!\to\!j$ 旅行时间 & $\pi^{k}$ & 车 $k$ 访问序列 \\
+        $d_i,C$ & 客户需求/单车容量（Q4，$C\!=\!60$） & $H(\mathbf{x})$ & QUBO 哈密顿量 \\
+        $s_i,[a_i,b_i]$ & 服务时间/时间窗 & $A$ & one-hot 罚系数（基线 $200$） \\
+        $M_1,M_2$ & 早到/晚到二次罚（$10,20$） & $n_{\rm var}$ & QUBO 比特数 \\
+        $M$ & 车辆使用罚（Q4，$1000$） & $n_{\rm Ising}$ & Ising 维度 ($n_{\rm var}\!+\!1$) \\
+        $t_i,P_i$ & 服务开始时刻/单点罚 & $\sigma_l$ & Ising 自旋（CIM 基本单元） \\
+        $J$ & 综合目标（业务量纲） & $T_0,\alpha$ & SA 初温/降温率 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% =============================================================
+\section{数据说明与预处理}
+% =============================================================
+
+本文所有建模数据来自题目附件\cite{problem2026} \texttt{参考算例.xlsx}，由 \texttt{\_q\_lib.load\_data} 一处统一读入：Sheet1 含 51 行节点属性（\texttt{tw\_a/tw\_b}、\texttt{service}=$2$、\texttt{demand}（$\sum d_i\!=\!271$）、\texttt{capacity}=$60$），Sheet2 含 $51^{2}$ 整数旅行矩阵 $T_{ii}=0$。\textbf{未引入任何外部数据。}缺失值检查全部为 0；50 个客户均满足 $a_i<b_i$ 且 $a_i\ge 0$；$\sum d_i\!=\!271,\,C\!=\!60$ 给出 $K_{\min}\!=\!\lceil 271/60\rceil\!=\!5$，$\max d_i<C$ 无单点超载。综合目标 $J\!=\!\text{travel}\!+\!\sum P_i(+M\!\cdot\!K)$ 各项以时间单位为统一量纲；上传 CIM 前调用 \texttt{adjust\_qubo\_matrix\_precision(Q,bit\_width=8)} 做\textbf{8-bit 精度调整}，真机返回解统一解码后用原始业务目标重新评价。四问数据规模见表~\ref{tab:scale}。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{四问数据规模与启用字段}
+    \label{tab:scale}
+    \begin{tabular}{c c c c c}
+        \toprule
+        问题 & $n$ & 时间矩阵 & 时间窗 & 容量 \\
+        \midrule
+        Q1 & 15 & $16\!\times\!16$ & 不使用 & 不使用 \\
+        Q2 & 15 & $16\!\times\!16$ & 使用 & 不使用 \\
+        Q3 & 50 & $51\!\times\!51$ & 使用 & 不使用 \\
+        Q4 & 50 & $51\!\times\!51$ & 使用 & $C=60$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% =============================================================
+\section{问题一：单车辆 TSP 的 QUBO 建模与求解}
+\label{sec:q1}
+% =============================================================
+
+\subsection{模型与 QUBO 编码}
+\label{subsec:q1-qubo}
+
+记客户集合 $\mathcal{V}=\{0,1,\dots,n\}$，0 为配送中心。设 $\pi=(\pi_0,\dots,\pi_{n+1})$ 为访问序，$\pi_0=\pi_{n+1}=0$。精确 TSP 模型
+\begin{equation}
+\label{eq:q1-classical}
+J^{\star} = \min_{\pi}\; \sum_{k=0}^{n} T_{\pi_k,\pi_{k+1}},
+\end{equation}
+在 $n=15$ 时由 Held--Karp 动态规划在 $\mathcal{O}(n^{2}2^{n})$ 时间内严格求解。引入\textbf{位置 one-hot 编码} $x_{i,p}\!\in\!\{0,1\}$（$x_{i,p}=1$ iff 客户 $i$ 在第 $p$ 位），共 $n^{2}=225$ 个二进制变量\cite{lucas2014ising,glover2019qubo,warren2017tspqubo}。两个 one-hot 约束以二次罚纳入目标：
+\begin{equation}
+H_{\rm pos}=A\!\sum_{p=1}^{n}\!\Big(\!\sum_{i=1}^{n} x_{i,p}\!-\!1\Big)^{2}\!,\quad
+H_{\rm cust}=A\!\sum_{i=1}^{n}\!\Big(\!\sum_{p=1}^{n} x_{i,p}\!-\!1\Big)^{2}\!.
+\label{eq:q1-pos}
+\end{equation}
+路径运输时间项分``中心$\to$首''、``客户$\to$客户''、``末$\to$中心''三段：
+\begin{equation}
+\label{eq:q1-travel}
+H_{\rm travel}
+= \sum_{i=1}^{n} T_{0,i}x_{i,1}
++ \sum_{p=1}^{n-1}\sum_{i\ne j} T_{i,j}x_{i,p}x_{j,p+1}
++ \sum_{i=1}^{n} T_{i,0}x_{i,n}.
+\end{equation}
+合并得 QUBO 哈密顿量 $H=H_{\rm pos}+H_{\rm cust}+H_{\rm travel}$。$H$ 仅是 QUBO 能量；真实业务目标 $J$ 始终由解码后的访问序代入式~\eqref{eq:q1-classical} 重新计算，二者在路径项一致但 $H$ 还含罚项贡献，\textbf{不能直接将 $H$ 当作 $J$}。本文取罚系数 $A=200$；通过 Kaiwu SDK \texttt{qubo\_matrix\_to\_ising\_matrix}\cite{kadowaki1998qa,kaiwusdk2024} 完成 QUBO$\to$Ising 转换，引入 1 个辅助自旋得 $226\!\times\!226$ Ising 矩阵；调用 \texttt{adjust\_qubo\_matrix\_precision(Q,8)} 做 8-bit 整数化以适配 CPQC-550 硬件位宽。
+
+\subsection{三层求解与结果}
+\label{subsec:q1-result}
+
+(i) \textbf{Held--Karp 动态规划}\cite{heldkarp1962dp}（精确基线，$\mathcal{O}(n^{2}2^{n})$）；(ii) \textbf{Kaiwu SDK 模拟退火}\cite{kirkpatrick1983sa}（$T_{0}=100,\alpha=0.99$，5 seeds$\times$200 chains $=1000$ 候选）；(iii) \textbf{CIM 真机求解}（CPQC-550，10 个 spin 样本）。三档求解器返回解统一交由 2-opt\cite{lin1973twoopt}$+$Or-opt\cite{or1976oropt} 局部搜索精修，构成``采样$\to$修复''流水线，最终用相同 \texttt{evaluate} 评价 $J$。结果见表~\ref{tab:q1-cmp}。
+
+\begin{table}[H]
+  \centering\footnotesize
+  \caption{问题一三档求解器对比（$n=15,\ A=200$，所有 $J$ 由原始 $T_{ij}$ 与式~\eqref{eq:q1-classical} 计算）}
+  \label{tab:q1-cmp}
+  \begin{tabular}{lcccccc}
+    \toprule
+    求解方式 & 候选数 & 原始可行率 & $J_{\rm raw}$ & $J_{\rm fix}$ & 最终 $J$ & 时间/s \\
+    \midrule
+    Held--Karp 精确 DP & --- & --- & --- & 29 & \textbf{29} & 0.05 \\
+    Kaiwu SDK SA      & 1000 & 0.6\% & 38 & 29 & \textbf{29} & 3.99 \\
+    CIM 真机          & 10  & 10\%  & 69 & 31 & 31 & 62 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+由表~\ref{tab:q1-cmp} 可知：精确 DP 与 SDK SA 经精修后均收敛至 $J=29$（全局最优），CIM 真机经修复给出 $J=31$（gap $+6.9\%$），验证 ``one-hot$\to$QUBO$\to$Ising'' 链路在 CPQC-550 上的可求解性。最优访问序为
+\begin{equation}
+\label{eq:q1-route}
+0\!\to\!4\!\to\!5\!\to\!6\!\to\!2\!\to\!15\!\to\!14\!\to\!1\!\to\!10\!\to\!11\!\to\!8\!\to\!13\!\to\!9\!\to\!12\!\to\!3\!\to\!7\!\to\!0,
+\end{equation}
+满足``无重复、无遗漏、首尾闭合''三项检查，路径图见图~\ref{fig:q1-route}（CIM 哈密顿量分布及 $A\!\times\!T_0$ 灵敏度详见附录~\ref{app:fig-extra}）。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{fig_rebuild_q1_route.pdf}
+  \caption{Q1 最优访问路线（$J=29$）：左为按访问顺序排环的客户拓扑，0 为配送中心，箭头指方向；右为累计行驶时间随访问序号单调递增曲线。}
+  \label{fig:q1-route}
+\end{figure}
+
+\textbf{Q1 在四问体系中的定位}：$n=15$ 是本文唯一可由精确算法严格验证全局最优的规模，Held--Karp DP 在此扮演``地面真值''而非主算法——其作用是为 SDK SA 与 CIM 真机的解码$+$精修流水线提供绝对正确性基线，确保 ``one-hot$\to$QUBO$\to$Ising$\to$8-bit 整数化$\to$采样$\to$修复'' 整条链路在已知答案下能够稳定复现 $J^{\star}=29$。罚系数 $A=200$ 是经验折中：$A$ 过小则 one-hot 约束被 $T_{ij}\!\sim\!\mathcal{O}(1)$ 的运输项淹没，原始可行率趋零；$A$ 过大则可行解-非可行解能量壁垒过陡，SA 难以跨越——下面 $5\!\times\!5$ 灵敏度网格佐证 $A\!\in\![100,300]$ 区间均能稳定收敛。\textbf{$H$ 与 $J$ 的关系}：QUBO 能量 $H$ 在合法 one-hot 解上等于 $H_{\rm travel}$（其它两项为 0），与业务目标 $J$ 仅相差常数，但在原始 SA 输出的非可行解上 $H$ 含 $A$ 量级 one-hot 罚项，故\textbf{始终以解码后的合法路径代入式~\eqref{eq:q1-classical} 重新计算 $J$}，避免``低能量但非可行''的解被误判为最优。
+
+\textbf{灵敏度}：本文在 $A\!\in\!\{50,100,150,200,300\}\!\times\!T_{0}\!\in\!\{20,50,100,200,500\}$ 的 $5\!\times\!5$ 网格上各 3 seed$\times$200 链共 $15{,}000$ 候选，结果（详见附录表~\ref{tab:q1_sens_A_T0}~与图~\ref{fig:q1-sens-app}）显示 25 组中 21 组经``采样$\to$修复''后收敛至 $J\!\in\![29,30]$，其余 4 组停留在 $[31,32]$，说明流水线对超参选择稳健。
+
+% =============================================================
+\section{问题二：考虑时间窗惩罚的单车辆路径规划}
+\label{sec:q2}
+% =============================================================
+
+\subsection{模型与目标函数}
+\label{subsec:q2-time}
+
+问题二在 Q1 单车 TSP 基础上引入\textbf{软时间窗惩罚}（标准 TSPTW\cite{solomon1987vrptw}）。在``无空闲等待''假设下，访问序号 $k$ 处客户的开始服务时刻
+\begin{equation}
+t_{\pi_1}=T_{0,\pi_1},\;\;
+t_{\pi_k}=t_{\pi_{k-1}}+s_{\pi_{k-1}}+T_{\pi_{k-1},\pi_k},\,k\!\ge\!2,
+\label{eq:q2-t-rec}
+\end{equation}
+即使 $t_{\pi_k}<a_{\pi_k}$ 也立即服务而不等待。运输时间 $\mathrm{travel}(\pi)=T_{0,\pi_1}+\sum T_{\pi_k,\pi_{k+1}}+T_{\pi_n,0}$，单点罚
+\begin{equation}
+\label{eq:q2-penalty}
+P_i(t_i)=M_1[a_i\!-\!t_i]_{+}^{2}+M_2[t_i\!-\!b_i]_{+}^{2},\quad M_1=10,M_2=20,
+\end{equation}
+综合业务目标
+\begin{equation}
+\label{eq:q2-J}
+J(\pi) = \mathrm{travel}(\pi) + \sum_{i=1}^{n} P_i(t_i).
+\end{equation}
+$J$ 与 QUBO 能量 $H$ 区分：\textbf{$H$ 仅承担路径排序与运输时间项，时间窗罚由解码后按式~\eqref{eq:q2-penalty} 回评再代入式~\eqref{eq:q2-J}}。
+
+\subsection{QUBO 编码取舍}
+\label{subsec:q2-enc}
+
+时间窗罚是依赖前缀路径累计时间的\textbf{多次型动态量}。直接展开为 QUBO 二次形需大量时间槽辅助比特，比较结果见表~\ref{tab:q2-enc}。
+
+\begin{table}[H]
+  \centering\footnotesize
+  \caption{Q2 QUBO 编码方案比较}
+  \label{tab:q2-enc}
+  \begin{tabular}{lccccl}
+    \toprule
+    方案 & 比特数 & 二次性 & 原始可行率 & 解码后 $J$ & 取舍 \\
+    \midrule
+    A 显式时刻槽位 & $\sim 900$ & 满足 & --- & --- & 比特规模过大 \\
+    B 位置 binary 编码 & $\sim 60$ & 不满足 & --- & --- & 破坏 QUBO 二次性 \\
+    \textbf{C one-hot$+$解码后回评（主方案）} & \textbf{225} & 满足 & 0.6\% & \textbf{84121} & 主方案 \\
+    D one-hot$+$TW 线性化（消融） & 225 & 满足 & 0\% & 无可行解 & 消融对照 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{方案 C（主方案）}沿用 Q1 的 $x_{i,p}$（$n^{2}=225$ 比特），QUBO 写为
+\begin{equation}
+\label{eq:q2-qubo}
+H(\mathbf{x}) = \underbrace{H_{\rm onehot}}_{A=200,\,\text{式}~\eqref{eq:q1-pos}} + \underbrace{H_{\rm travel}}_{\text{式}~\eqref{eq:q1-travel}}.
+\end{equation}
+\textbf{时间窗罚不进入 QUBO}，由统一 \texttt{evaluate} 在解码后按式~\eqref{eq:q2-t-rec}--\eqref{eq:q2-J} 回评。\textbf{方案 D 的失败机制}：实测 $\hat\tau_p\!\approx\!89\!\gg\!b_i\!\le\!30$ 致对角罚 $\sim\!10^{5}$，相对 $A=200$ 形成 $\sim\!596\times$ 尺度差，SA 优先把所有 $x_{i,p}=0$ 以消巨值，one-hot 全军覆没，可行率 $0\%$——说明动态时间窗约束应留在解码阶段处理。
+
+\subsection{三层求解与结果}
+\label{subsec:q2-result}
+
+(i) \textbf{Python v1}（13 warm-start$+$2-opt/Or-opt/swap$+$SA $T_0=80,\alpha=0.995$）；(ii) \textbf{Python v2}（27 warm-start$+$150 轮 LNS\cite{shaw1998lns,ropke2006alns}$+$3 SA seeds$+$3-opt）；(iii) \textbf{Kaiwu SDK SA}（5 seeds$\times$200 chains，NN warm-start）；(iv) \textbf{CIM 真机}（任务 R-Q2-006，226 维 Ising，8-bit，10 spin 样本）。\textbf{关键技巧}：QUBO 能量最优 $\ne J$ 最优，须对能量序前若干可行候选共同 polish 后按 $J$ 取最优。结果见表~\ref{tab:q2-cmp}。
+
+\begin{table}[H]
+  \centering\footnotesize
+  \caption{Q2 三层求解器对比（同一 \texttt{evaluate} 函数评价 $J$）}
+  \label{tab:q2-cmp}
+  \begin{tabular}{lccccccl}
+    \toprule
+    求解方式 & 候选 & 可行率 & travel & penalty & $J$ & 耗时/s & 说明 \\
+    \midrule
+    Python v1（多起点$+$SA） & 13 & 100\% & 31 & 84090 & \textbf{84121} & 21 & 经典基线 \\
+    Python v2（LNS$+$多 seed SA）& 27 & 100\% & 31 & 84090 & \textbf{84121} & 56 & 增强基线 \\
+    Kaiwu SDK SA & 1000 & 0.6\% & 31 & 84090 & \textbf{84121} & 3.84 & QUBO 验证 \\
+    CIM 真机 R-Q2-006 & 10 & 10\% & 31 & 84090 & \textbf{84121} & 122.3 & 真机验证 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+四类异构求解器在该实例上均得 $J=84121$（travel $=31$, penalty $=84090$），近似最优可行路径
+\begin{equation}
+\label{eq:q2-route}
+0\!\to\!2\!\to\!13\!\to\!6\!\to\!5\!\to\!8\!\to\!7\!\to\!11\!\to\!10\!\to\!1\!\to\!9\!\to\!3\!\to\!12\!\to\!4\!\to\!15\!\to\!14\!\to\!0,
+\end{equation}
+路径图见图~\ref{fig:q2-route}，逐客户时间窗与实际服务对照见图~\ref{fig:q2-gantt}（逐点调度数值表 \ref{tab:q2_schedule}、CIM 哈密顿量曲线、C/D 消融柱状图见附录~\ref{app:q2-schedule}--\ref{app:fig-extra}）。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_rebuild_q2_time_window_gantt.pdf}
+  \caption{Q2 时间窗 vs 实际服务时刻甘特图（横轴时间单位，蓝框为 $[a_i,b_i]$，绿/橙/红块为按时/早到/迟到服务段，标注数字为 $P_i$ 值）。客户 14 末段晚到 37 单位、单点罚 $27{,}380$ 为全程最大；前 4 客户 $\{2,13,6,5\}$ 严格按时无罚。}
+  \label{fig:q2-gantt}
+\end{figure}
+
+\textbf{结构性特征}：(i) penalty $=84090$ 占 $J$ 的 $99.96\%$，``最短路''与``时间窗最优''在本实例不重合——travel $=31$ 已逼近 $n=15$ 的 TSP 下界，但因单车无空闲等待、累计时间随访问位置严格递增（位置 $k$ 处客户最早开始时刻 $\ge \sum_{j<k}T_{\pi_j,\pi_{j+1}}+\sum_{j<k}s_{\pi_j}$），后段客户必然迟到；(ii) 本题 15 客户 $b_i$ 多分布于 $[12,30]$，而单车 15 客户全程累计 $\ge 45$ 单位，迟到为\textbf{结构性现象}而非算法不力——目标因此退化为``在不可避免的违反中尽量减少惩罚''；(iii) 图~\ref{fig:q2-gantt}~显示前段客户准时、后段集中违反，是该结构的直接表现，也佐证 Q4 引入多车的必要性（多车可独立从 0 出发，重置累计时间）。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.62\textwidth]{fig_rebuild_q2_route.pdf}
+  \caption{Q2 最优访问路径（$n=15$，travel $=31$，penalty $=84090$，$J=84121$，四方一致）。绿/红节点分别表示时间窗满足/违反，灰为配送中心 0。}
+  \label{fig:q2-route}
+\end{figure}
+
+\textbf{算法消融}：v1 与 v2 复杂度递增（13$\to$27 warm-start，引入 LNS 与 3-opt），运行时间$\sim 2.7\times$ 但 $\Delta J=0$ 且路径完全一致；v2 中 3 个 SA seed 全部独立收敛至 84121，说明在已测试算法邻域内未观察到进一步改进。
+
+% =============================================================
+\section{问题三：面向 50 客户的大规模单车辆路径规划}
+\label{sec:q3}
+% =============================================================
+
+\subsection{规模挑战与比特预算}
+\label{subsec:q3-budget}
+
+问题三沿用 Q2 软时间窗评价（$M_1=10,M_2=20$），但客户规模由 $n=15$ 扩为 $n=50$。模型结构与 Q2 完全相同——单车 TSPTW、综合目标 $J=\mathrm{travel}+\sum P_i$——但规模放大引出两个新挑战：(i) one-hot 全局编码需 $n^{2}=2500$ 比特，远超 CPQC-550 的 550 上限；(ii) 时间窗紧张被进一步放大，多数客户迟到不可避免。本问核心贡献不在``跑出 50 客户最短路''，而在设计\textbf{可上传、可分解、可拼接、可回评}的 subQUBO 流水线。各编码方案比特预算见表~\ref{tab:q3-budget}。
+
+\begin{table}[H]
+  \centering\footnotesize
+  \caption{Q3 QUBO 编码方案比特预算（550 为 CPQC-550 上限）}
+  \label{tab:q3-budget}
+  \begin{tabular}{lccccl}
+    \toprule
+    编码方案 & 变量数 & $\le 550$ & SDK 可求性 & CIM 可提交性 & 说明 \\
+    \midrule
+    全局 one-hot $x_{i,p}$ & $50^{2}=2500$ & 否 & 极低（实测$\to 0$） & 否 & 不可行 \\
+    分段 subQUBO（$n_{\rm sub}=17$） & $\le 289$ & 是 & 0--2.1\% & 是 & 主方案 \\
+    分段 subQUBO（$n_{\rm sub}=16$） & 256 & 是 & 0--10\% & 是 & 末段 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{fig_rebuild_q3_qubit_budget.pdf}
+  \caption{Q3 比特预算对比：全局 one-hot QUBO 需 $50^{2}=2500$ 比特（灰柱），远超 CPQC-550 上限 550（红虚线）；本文滚动窗口分解为 3 段子 QUBO（蓝柱 289/289/256）后均 $\le$ 上限，对应 ising 维度 $\le 290$ 可直接提交真机。}
+  \label{fig:q3-qubit-budget}
+\end{figure}
+
+由图~\ref{fig:q3-qubit-budget}~可知，全局编码与真机预算之间存在 $\sim 4.5\!\times$ 的硬规模差距，故``直接构 2500 比特 QUBO 上传 CPQC-550''在硬件层不可执行；而 17/17/16 三段切分使每段 ising 维度均 $\le 290$，落到 550 限内并留有冗余以容纳未来 $n\!=\!60\sim 70$ 的中规模算例。\textbf{关键约定}：分段 subQUBO 是\textbf{局部排序优化器}而非完整全局 QUBO——其能量 $\sum_k H_k$ 仅刻画各段段内运输代价，不含跨段衔接、不含时间窗罚，故必须在解码拼接后用统一 \texttt{evaluate} 在完整 50 客户路径上重新计算 $J$，以\textbf{完整路径业务目标}作为最终评价标准。
+
+\subsection{滚动窗口分解 subQUBO 模型}
+\label{subsec:q3-decomp}
+
+\textbf{基线}：先用纯 Python 多起点启发式得完整 $n=50$ 路径基线 $\pi^{(0)}$，作为分段切片起点。\textbf{滚动切片}：
+\begin{equation}
+\label{eq:q3-segments}
+\mathcal{S}_1\!=\!\{\pi_1^{(0)}\!\dots\!\pi_{17}^{(0)}\},\,
+\mathcal{S}_2\!=\!\{\pi_{18}^{(0)}\!\dots\!\pi_{34}^{(0)}\},\,
+\mathcal{S}_3\!=\!\{\pi_{35}^{(0)}\!\dots\!\pi_{50}^{(0)}\},
+\end{equation}
+段大小 17/17/16，对应 subQUBO 维度 289/289/256，全部 $\le 550$。\textbf{subQUBO 构造}：对第 $k$ 段固定段前 $u_k$、段后 $v_k$（首末段为 $0$），对段内客户重排，引入 $y_{i,p}^{(k)}\!\in\!\{0,1\}$，构造
+\begin{equation}
+\label{eq:q3-subqubo}
+H_k\!=\!A\!\sum_{p}\!(\!\sum_{i\!\in\!\mathcal{S}_k}\! y_{i,p}^{(k)}\!-\!1)^{2}
+\!+\!A\!\sum_{i\!\in\!\mathcal{S}_k}\!(\!\sum_{p}\! y_{i,p}^{(k)}\!-\!1)^{2}
+\!+\!H_{\rm travel}^{(k)}(u_k,v_k),
+\end{equation}
+段内 $\le n_{\rm sub}^2=289$ 比特。subQUBO 仅承担\textbf{段内排序}的二次组合结构，不显式包含时间窗罚。\textbf{解码$\to$拼接$\to$全局回评}：三段 subQUBO 独立求解后，按 $\hat\pi=(0,\hat\sigma_1,\hat\sigma_2,\hat\sigma_3,0)$ 拼接为完整 50 客户路径，所有 $\mathrm{travel},P_i,J$ \textbf{由统一 \texttt{evaluate} 在 $\hat\pi$ 上重新计算}（不能用 $\sum_k H_k$ 直接当业务目标），最后做跨段 2-opt/Or-opt 全局精修。
+
+\subsection{三层求解与结果}
+\label{subsec:q3-result}
+
+(i) \textbf{纯 Python 全局基线}（42 warm-start$+$500 轮 LNS$+$3 SA seeds$+$3-opt）；(ii) \textbf{Kaiwu SDK 分解 SA}（每段 240 候选/3 seeds，$T_0=500,\alpha=0.995$）；(iii) \textbf{CIM 真机分解}（每段 10 spin 样本，3 段共 3 次配额）。三层共用同一抽象层 \texttt{solve\_subqubo(Q,backend)}，仅 backend 切换。结果见表~\ref{tab:q3-cmp}。
+
+\begin{table}[H]
+  \centering\footnotesize
+  \caption{Q3 三层求解器对比（$n=50$，$J$ 由完整路径 \texttt{evaluate} 重新计算）}
+  \label{tab:q3-cmp}
+  \begin{tabular}{lccccccl}
+    \toprule
+    求解方式 & 子 QUBO & 可行率 & travel & penalty & $J$ & 耗时/s & 说明 \\
+    \midrule
+    Python LNS（基线） & --- & 100\% & 56 & 4{,}941{,}850 & \textbf{4{,}941{,}906} & 829 & 经典基线 \\
+    Kaiwu SDK SA 分解 & $\le 289$ & 0--2.1\% & 56 & 4{,}941{,}850 & \textbf{4{,}941{,}906} & 31.4 & 拼接后等同基线 \\
+    CIM 真机 seg2 & 289 & 10\% & 65 & 5{,}331{,}100 & 5{,}331{,}165 & 62.1 & 该段较基线高 7.9\% \\
+    CIM 真机 seg3 & 256 & 0\% & 56 & 4{,}941{,}850 & \textbf{4{,}941{,}906} & 63.2 & 经局部修复后恢复为可行路径 \\
+    CIM 真机 seg1 & 289 & --- & --- & --- & --- & --- & 旧账号配额异常，未获得有效返回 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+由表~\ref{tab:q3-cmp} 可知：(i) Python 基线、SDK 分解、CIM seg3 三方一致 $J=4{,}941{,}906$（travel $=56$，penalty $=4{,}941{,}850$），完成大规模分解-回评流程在该实例的可行性验证；(ii) CIM seg2 段内 $H=36254$ 较低但分段拼接路径在完整 \texttt{evaluate} 下 $J=5{,}331{,}165$（较基线高 $7.9\%$）——\textbf{单段能量低不等同于全局业务目标更优}，这是``必须以完整路径回评''的最直接证据：seg2 真机给出的段内排序在该段累计运输时间上确实更短，但段尾客户的服务开始时刻与下一段段首的衔接被打乱，致后段时间窗惩罚整体上扬；(iii) seg3 单段 $H=29400$，原始解经局部修复后恢复为可行路径并与基线一致——说明在 256 比特规模下 CIM 真机的``采样$+$精修''组合可达到与 SDK SA 同等质量；(iv) seg1 因平台旧账号配额异常未获返回，本文如实标注，未补造数据以维持结果可追溯性。\textbf{时间窗惩罚结构性主导}：全程 $45/50$ 客户违反时间窗，penalty 在 $J$ 中占 $\sim$1，相比 Q2（$n\!=\!15$, penalty $84090$）量级提升 $\sim 58.7\times$，远超 $n$ 的线性比例——这与 Q2 中识别的``单车后段累计迟到''机制一致，且因 $n$ 增大被放大。\textbf{算法效率与诚信定位}：SDK 分解 SA 端到端 $31.4$ s 而纯 Python LNS 基线 829 s，时间差 $\sim 26\!\times$ 反映``LNS 全局搜索''与``$\le 289$ 比特子 QUBO 上 240 候选 SA''的工作量差异，\textbf{不等同于硬件量子加速}；CIM 三段累计 $\sim 190$ s 主要消耗在网络传输与平台调度，真正光学求解为毫秒量级。Q3 完整路径图与 CIM 能量分布见附录~\ref{app:fig-extra}。
+
+% =============================================================
+\section{问题四：考虑容量约束的多车辆路径规划}
+\label{sec:q4}
+% =============================================================
+
+\subsection{多车辆模型与容量约束}
+\label{subsec:q4-model}
+
+问题四在 Q3 基础上引入\textbf{多车辆容量约束}与\textbf{车辆数决策}（标准 CVRPTW\cite{toth2014vrp,feld2019cvrp,salehi2022vrpqubo,harwood2021vrptwqubo}）：每车容量 $C=60$，$\sum d_i=271$ 给容量下界 $K_{\min}=\lceil 271/60\rceil=5$。\textbf{决策变量}：客户分配 $y_{i,k}\!\in\!\{0,1\}$、车辆使用指示 $u_k\!\in\!\{0,1\}$、车 $k$ 访问序 $\pi^k$。沿用``无空闲等待''递推 $t_{\pi_p^k}^{(k)}=t_{\pi_{p-1}^k}^{(k)}+s_{\pi_{p-1}^k}+T_{\pi_{p-1}^k,\pi_p^k}$。综合业务目标
+\begin{equation}
+\label{eq:q4-J}
+J=M\!\cdot\!\sum_{k} u_k+\sum_{k}\mathrm{travel}_k+\sum_{i} P_i(t_i^{(k(i))}),
+\end{equation}
+其中 $M=1000$ 为车辆使用罚（经验权重，标定原则使 $M\!\cdot\!K$ 与 travel$+$penalty 数量级可比）。\textbf{硬约束}：容量 $\sum_i d_i y_{i,k}\le C u_k$；完整覆盖 $\sum_k y_{i,k}=1$；使用一致 $\sum_i y_{i,k}\le n u_k$。$J$ 是\textbf{完整方案的业务目标}，由统一 \texttt{evaluate} 在解码方案上计算；子 TSP QUBO 能量 $\sum_k H_k$ 仅是车内排序代价的求和——不含 TW 罚、不含 $M\!\cdot\!K$、不反映跨车协同。
+
+\subsection{比特预算与分层 QUBO 编码}
+\label{subsec:q4-budget}
+
+由于全 3D one-hot $x_{i,p,k}$ 需 $K\!\cdot\!n^{2}$ 比特（$K^{*}=7$ 时 $17{,}500$，超 550 上限$\sim$32 倍），本文沿用 Q3 框架的``分配$+$每车独立 subQUBO''分层编码，方案对比见表~\ref{tab:q4-budget}。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{Q4 编码方案比特预算（550 为 CPQC-550 上限）}
+    \label{tab:q4-budget}
+    \begin{tabular}{lcccl}
+        \toprule
+        编码方案 & 变量数（$n=50,K=7$）& $\le 550$ & CIM 可提交 & 说明 \\
+        \midrule
+        全 3D one-hot $x_{i,p,k}$ & $K\!\cdot\!n^{2}=17{,}500$ & 否 & 否 & 不可行 \\
+        $y_{i,k}$+每车 TSP one-hot & $\approx 700$ & 否 & --- & 仍超 \\
+        \textbf{启发式分配$+$每车子 TSP QUBO} & 每子 $\le 8^{2}=64$ & 是 & 是 & ★ 主方案 \\
+        block-diag 7 段合并（$K=8$ 配额） & 297（Ising 298）& 是 & 是 & 配额受限对照 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{主方案}：① 客户分配 $y_{i,k}$ 由 6 种经典启发式（Clarke--Wright Savings\cite{clarke1964savings}、Time-sweep、NN-with-capacity、罚意识贪心、参考解及反向变体、按 $a_i$ 重排）确定，所有候选满足容量约束；② 每条路线（$\le 8$ 客户）独立构造 $\le 8^{2}=64$ 比特子 QUBO（结构与 Q3 同构，段前段后均为 0）；③ 跨车 LNS 500 轮$\times$4 seeds$+$多 seed SA 长退火（$T_0=500,\alpha=0.997$），叠加车间 move/swap（带容量校验），同步对 $K\!\in\![5,10]$ 扫描按式~\eqref{eq:q4-J} 选 $K^*$。\textbf{block-diag 配套对照}（$K=8$ 配额紧张场景）：将 7 段拼成块对角大矩阵（297 维，Ising 298 $\le 550$），1 次 \texttt{cim.solve} 调用同步求 7 段，节约 5 次配额——是\textbf{对照实验}而非主模型，定量考察``配额节约''与``每段 sample 数减少''的 trade-off。所有方案最终都用统一 \texttt{evaluate} 在式~\eqref{eq:q4-J} 上重新计算 $J$。
+
+\subsection{$K^{*}=7$ 主方案结果}
+\label{subsec:q4-k7}
+
+经三阶段求解，$J$ 在 $K^{*}=7$ 取最小值 $7149$，每车路径见表~\ref{tab:q4-k7-routes}。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{Q4 $K^{*}=7$ 主方案：每车路径、负载与运输时间}
+    \label{tab:q4-k7-routes}
+    \begin{tabular}{cl ccc}
+        \toprule
+        车 & 路径 & demand/$C$ & travel & penalty \\
+        \midrule
+        V1 & $0\!\to\!15\!\to\!2\!\to\!21\!\to\!40\!\to\!6\!\to\!37\!\to\!17\!\to\!0$ & 35/60 & 17 & 0 \\
+        V2 & $0\!\to\!31\!\to\!30\!\to\!9\!\to\!34\!\to\!35\!\to\!20\!\to\!32\!\to\!0$ & 42/60 & 15 & 10 \\
+        V3 & $0\!\to\!27\!\to\!16\!\to\!44\!\to\!38\!\to\!14\!\to\!43\!\to\!42\!\to\!13\!\to\!0$ & 47/60 & 13 & 0 \\
+        V4 & $0\!\to\!47\!\to\!19\!\to\!36\!\to\!49\!\to\!11\!\to\!10\!\to\!1\!\to\!0$ & 41/60 & 15 & 20 \\
+        V5 & $0\!\to\!33\!\to\!25\!\to\!39\!\to\!23\!\to\!22\!\to\!41\!\to\!4\!\to\!0$ & 35/60 & 16 & 0 \\
+        V6 & $0\!\to\!28\!\to\!29\!\to\!12\!\to\!3\!\to\!50\!\to\!26\!\to\!24\!\to\!0$ & 39/60 & 17 & 10 \\
+        V7 & $0\!\to\!5\!\to\!45\!\to\!7\!\to\!18\!\to\!8\!\to\!46\!\to\!48\!\to\!0$ & 32/60 & 16 & 0 \\
+        \midrule
+        \textbf{合计} & --- & \textbf{271/420} & \textbf{109} & \textbf{40} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_rebuild_q4_multivehicle_routes.pdf}
+  \caption{Q4 $K^{*}=7$ 主方案多车 CVRPTW 拓扑路线（travel $=109$, penalty $=40$, $J=7149$）。V1$\sim$V7 七色区分，黑色中心为配送中心 $0$，红色高亮为时间窗违反客户（共 $3/50$，分别为 V2-31 早 1、V4-10 迟 1、V6-3 早 1）；每车从 $0$ 出发并返回 $0$，无超载。}
+  \label{fig:q4-routes}
+\end{figure}
+
+由图~\ref{fig:q4-routes}~与表~\ref{tab:q4-k7-routes}~可见：(i) \textbf{覆盖与容量}：7 车合计 demand $=35\!+\!42\!+\!47\!+\!41\!+\!35\!+\!39\!+\!32=271$，与 $\sum d_i=271$ 严格一致——所有 50 客户被恰好分配一次，无重复或漏访；每车 demand 满足 $\le C=60$，无超载，平均容量利用率 $271/(7\!\times\!60)=64.5\%$，呈``均衡分布''而非``一两辆吃满、其它空载''——这是 Clarke--Wright Savings + 跨车 LNS 联合优化的直接效果；(ii) \textbf{运输与违反}：total travel $=109$、penalty $=40$，仅 V2 客户 31（早 1）、V4 客户 10（迟 1）、V6 客户 3（早 1）三处轻微违反，单点罚分别为 $10\!\times\!1^2=10$、$20\!\times\!1^2=20$、$10\!\times\!1^2=10$，合计 $40$（图中红色标记），覆盖率 $94\%$ 严格按时；(iii) \textbf{综合目标}：$J=M\!\cdot\!K^{*}+\mathrm{travel}+\mathrm{penalty}=1000\!\times\!7+109+40=7149$，三项数量级关系为 $7000:109:40\approx 175:2.7:1$，\textbf{车辆数主项主导，运输次之，时间窗罚最末}——这定性地解释了为什么后续 $K$ 灵敏度中 $K^{*}=7$ 是最优而非 $K=10$（后者 penalty 已降至 $0$ 但 $M\!\cdot\!K=10000$ 远超节省的运输与罚项之和）。Q4 多车甘特图、违反分布柱状图、Pareto 散点详见附录~\ref{app:fig-extra}。
+
+\subsection{$K$ 灵敏度与 K=8 对比}
+\label{subsec:q4-Ksens}
+
+针对题目第 (iv) 问，本文对 $K\!\in\![5,10]$ 全部跑通经典基线，与参考解对比见表~\ref{tab:q4-Ksens}~与图~\ref{fig:q4-Ksens}。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{$K\!\in\![5,10]$ 灵敏度：本文目标、参考目标与差值}
+    \label{tab:q4-Ksens}
+    \begin{tabular}{ccccccc}
+        \toprule
+        $K$ & travel & penalty & 本文 $J$ & 参考 $J^{\rm ref}$ & $\Delta J$ & 比较 \\
+        \midrule
+        5 & 78 & 8700 & \textbf{13778} & 16825 & $-3047$ & 优于参考 \\
+        6 & 92 & 1350 & \textbf{7442} & 7568 & $-126$ & 优于参考 \\
+        \textbf{7} & \textbf{109} & \textbf{40} & \textbf{7149} & 7149 & 0 & \textbf{持平}（$K^{*}$）\\
+        8 & 114 & 10 & \textbf{8124} & 8160 & $-36$ & 优于参考 \\
+        9 & 123 & 0 & \textbf{9123} & 9127 & $-4$ & 优于参考 \\
+        10 & 134 & 0 & 10134 & 10126 & $+8$ & 略低于参考（差 $0.08\%$）\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{fig_rebuild_q4_K_sensitivity.pdf}
+  \caption{Q4 $K\!\in\![5,10]$ 灵敏度三联曲线。(a) $K$ 对综合目标 $J$ 影响，$J$ 在 $K^{*}=7$ 取最小值 $7149$；(b) travel 单调上升 $78\!\to\!134$、penalty 单调下降 $8700\!\to\!0$，二者``此消彼长''共同决定 $K^{*}$。}
+  \label{fig:q4-Ksens}
+\end{figure}
+
+\textbf{结构性结论}：(i) travel 随 $K$ 单调上升（$78\!\to\!134$，平均每增 1 车额外$\sim 11$ travel，源于新增车辆需独立从配送中心往返）；(ii) penalty 随 $K$ 单调下降（$8700\!\to\!0$，每条路线变短$\to$时间累积减少$\to$不再迟到）；(iii) 三项之和（含 $M\!\cdot\!K$）在 $K=7$ 取最小值 $7149$。$K=4$ 因 $4\!\times\!60=240<271$ 直接违反容量，故 $K\!\in\!\{5,\dots,10\}$ 是可行集。本文 6 个 $K$ 中 4 个严格优于参考、1 个持平、1 个差 $0.08\%$。
+
+\textbf{$K^{*}=7$ vs $K=8$ Pareto 对比}：$K=7$ travel $=109$、penalty $=40$、$J=7149$（在 $M\!=\!1000$ 下\textbf{综合目标最优}）；$K=8$ travel $=114$、penalty $=10$、违反客户 $1/50$、$J=8124$（\textbf{时间窗满足度与客户体验更优}）。两方案对应 Pareto 前沿上的两个非支配点：从 $K\!=\!7$ 至 $K\!=\!8$，需多调度 $1$ 辆车并多走 $5$ 单位（$\Delta\mathrm{travel}\!=\!+5$），换取 penalty 由 $40$ 降至 $10$（$\Delta\mathrm{penalty}\!=\!-30$）、违反客户由 $3$ 降至 $1$。是否值得，取决于业务方对车辆固定成本 $M$ 与客户违约成本的相对权重——本文按题目权衡 $M\!=\!1000$ 取 $K^{*}\!=\!7$，并保留 $K\!=\!8$ 作为``客户体验优先''的备选方案以供决策者参考。
+
+\subsection{Python / SDK / CIM 三层对比}
+\label{subsec:q4-cmp}
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{Q4 $K^{*}=7$ 与 $K=8$ 三层求解器对比}
+    \label{tab:q4-cmp}
+    \begin{tabular}{l l c c c c c c}
+        \toprule
+        方案 & 求解器 & 子 QUBO & 可行率 & travel & penalty & $J$ & 耗时/s \\
+        \midrule
+        $K\!=\!7$ & Python LNS & --- & 100\% & 109 & 40 & \textbf{7149} & 1182 \\
+        $K\!=\!7$ & Kaiwu SDK SA 分解 & $\le 64$/车 & 0--3\% & 109 & 40 & \textbf{7149} & 3.77 \\
+        $K\!=\!7$ & CIM 真机（7 车独立提交）& $\le 64$/车 & 1--10/段 & 108 & 60 & 7168 & 433 \\
+        $K\!=\!8$ & Python LNS & --- & 100\% & 114 & 10 & \textbf{8124} & --- \\
+        $K\!=\!8$ & CIM block-diag (v1+v2--v8 合并) & $\le 297$ 合并 & 1--10/段 & 121 & 200 & 8321 & 124 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+(i) \textbf{$K^{*}=7$ 三方一致}：Python LNS、SDK SA、CIM 真机分别得 $J=7149/7149/7168$，CIM 较 Python/SDK 仅高 $19$（gap $+0.27\%$），三方均给出与表~\ref{tab:q4-k7-routes}~一致的 7 车路线结构，差异仅来自 V3 段 8 客户子 QUBO（最大 64 比特）真机采样时引入的局部排序波动——这从端到端层面验证 ``Savings 分配 + 每车 $\le 64$ 比特子 QUBO + 真机求解'' 链路的可行性，但本文不据此声称真机求解优于经典启发式，仅说明真机求解链路在该问题规模下与经典基线一致；CIM 7 车每车独立提交 1 task$\times$10 sample，共消耗 $7$ 次平台配额。(ii) \textbf{时间差与诚信定位}：SDK SA 端到端 $3.77$ s 而 Python LNS $1182$ s，反映前者仅在 $\le 64$ 比特/车子 QUBO 上做约束少、维度小的 SA 采样，后者承担``LNS $500\!\times\!4$ seeds + 跨车 move/swap + 容量校验''的全局搜索，工作量差异天然存在；CIM 累计 $433$ s 主要为 7 次配额的网络往返与平台排队，光学部分为毫秒级——\textbf{该时间差不等同于通用算法加速，更不等同于硬件量子优势}。(iii) \textbf{$K=8$ block-diag 配额优化对照}：将 V2$\sim$V8 共 7 段子 QUBO 拼成 $297\!\times\!297$ 块对角矩阵（ising 298, $\le 550$），1 次 \texttt{cim.solve} 同步求解 7 段 + V1 单独 1 次，总计 $2$ 次配额（较独立提交节约 $5$ 次）；但 \texttt{sample\_number}$=10$ 摊薄到 7 段时每段有效样本仅 $\sim 1.4$，统计冗余较每段独立 10 sample 下降近一个量级，致 V2 段 polish 后残留 penalty $=200$、整方案 $J=8321$（vs Python $K=8$ 的 $8124$，gap $+2.42\%$）。该对照\textbf{是配额受限场景下的部署策略对比而非主模型}，定量呈现``节约配额 vs 每段统计样本''的 trade-off：当配额充裕时取每车独立提交，当配额紧张时取 block-diag 合并，二者解码均落到同一统一 evaluate 上回评。本问完整回答题目第 (i)--(iv) 全部要求。
+
+% =============================================================
+\section{模型检验与灵敏度分析}
+% =============================================================
+
+本文针对四问最终方案设计五类检验：(i) 路径可行性与约束满足性；(ii) Python/SDK/CIM 三层一致性；(iii) 超参灵敏度（Q1 $A\!\times\!T_0$、Q4 $K$）；(iv) 编码方案消融（Q2 C vs D）；(v) 算法稳定性与多 seed 检验。
+
+\subsection{可行性与一致性检验}
+\label{sec:sens-feasibility}
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{四问可行性与约束满足性检验汇总（由结果 JSON 与统一 \texttt{evaluate} 复核）}
+    \label{tab:sens-feasibility}
+    \begin{tabular}{ccccccc}
+        \toprule
+        问题 & 覆盖 & 重复/漏访 & 起终点 & 时间窗复算 & 容量 & one-hot 修复后 \\
+        \midrule
+        Q1 & 15/15 & 0/0 & $0\!\to\!0$ & --- & --- & 100\% \\
+        Q2 & 15/15 & 0/0 & $0\!\to\!0$ & 84090$=$84090 & --- & 100\% \\
+        Q3 & 50/50 & 0/0 & $0\!\to\!0$ & 4{,}941{,}850$=$4{,}941{,}850 & --- & 100\% \\
+        Q4 & 50/50 & 0/0 & 7 车均 $0\!\to\!0$ & $40\!=\!40$ & 7 车均 $\le 60$ & 100\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{四问 Python / Kaiwu SDK / CIM 真机三方一致性汇总}
+    \label{tab:sens-cross}
+    \begin{tabular}{ccccccc}
+        \toprule
+        问题 & 规模 & Python 基线 & SDK SA & CIM 真机 & gap & 子 QUBO 规模 \\
+        \midrule
+        Q1 & $n=15$ TSP & 29 & 29 & 31 & $+6.9\%$ & 225 \\
+        Q2 & $n=15$ TSPTW & 84121 & 84121 & 84121 & 0 & 225 \\
+        Q3 & $n=50$ 分解 & 4{,}941{,}906 & 4{,}941{,}906 & 4{,}941{,}906（seg3）& 0 & $\le 289$/段 \\
+        Q4 & $K^{*}=7$ VRPTW & 7149 & 7149 & 7168 & $+0.27\%$ & $\le 64$/车 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{fig_rebuild_solver_compare.pdf}
+  \caption{四问 Python / Kaiwu SDK / CIM 真机三层求解器横向对比（所有 $J$ 由统一 \texttt{evaluate} 函数复算）。Q1: $29/29/31$（CIM gap $+6.9\%$）；Q2: $84121/84121/84121$（三方一致）；Q3: $4{,}941{,}906/4{,}941{,}906/4{,}941{,}906$（seg3，三方一致）；Q4: $7149/7149/7168$（CIM gap $+0.27\%$）。y 轴 symlog 跨四个数量级，便于同时展示 Q1 与 Q3 的极端 $J$ 量级差异。}
+  \label{fig:solver-compare}
+\end{figure}
+
+由表~\ref{tab:sens-feasibility}--\ref{tab:sens-cross}~与图~\ref{fig:solver-compare}~可知：(i) 四问最终方案均通过覆盖、重复/漏访、起终点三项基础检验；Q2/Q3/Q4 时间窗惩罚由统一 \texttt{evaluate} 与 JSON 中 \texttt{penalty} 字段严格相等；Q4 七车 demand $35,42,47,41,35,39,32$ 合计 $271$，每车 $\le 60$；(ii) SDK SA 与 CIM 真机原始 spin 解未必满足 one-hot，原始可行率受单翻转邻域与 one-hot 强约束的固有矛盾影响在 $0.6\!\sim\!10\%$；经``采样$\to$修复''流水线（2-opt$+$Or-opt）修复为合法排列，最终参与 $J$ 评价的解均为合法路径；(iii) Python 与 SDK 在四问上完全一致（$J$ 严格相等），CIM 在 Q2/Q3 与 Python/SDK 一致，仅在 Q1（$+6.9\%$）与 Q4（$+0.27\%$）存在小幅 gap——这一 gap 主要来自 CIM 单 task 仅 $10$ sample 的统计冗余远小于 SDK 的 $1000$ 候选与 Python LNS 的 $\sim 10^4$ 评价次数，并\textbf{不构成``CIM 算法不足''或``SDK 优于真机''的结论}；所有子 QUBO ising 维度均 $\le 550$，符合 CPQC-550 真机硬件预算。
+
+\subsection{参数灵敏度、消融与稳定性}
+
+\textbf{Q4 $K$ 灵敏度}（题目第 (iv) 问）：见表~\ref{tab:q4-Ksens}~与图~\ref{fig:q4-Ksens}：travel 单调上升、penalty 单调下降，三项之和在 $K^{*}=7$ 取最小 $7149$；6 个 $K$ 中本文 4 个优于参考、1 个持平、1 个差 $0.08\%$，整体回答``车辆数对总目标的影响''这一题目第 (iv) 问要求。\textbf{Q1 罚系数 $A$ 与 SA 初温 $T_0$ 灵敏度}：$5\!\times\!5$ 网格 25 组每组 3 seed$\times$200 链共 $15{,}000$ 候选，经``采样$\to$修复''流水线后 $J$ 分布如图~\ref{fig:q1-sens-body}（25 组中 21 组收敛至 $J\!\in\![29,30]$，其余 4 组停留 $[31,32]$，全网格平均与基线 $J\!=\!29$ 相对偏差 $\le 10\%$），说明流水线对 $A,T_0$ 选择稳健，$A\!\in\![100,300]$ 与 $T_0\!\in\![50,200]$ 均为安全区间。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig_q1_sens_bestcost_heatmap.pdf}
+  \caption{Q1 罚系数 $A$ 与 SA 初温 $T_0$ 二维灵敏度热图（$5\!\times\!5$ 网格，3 seed 平均）：cell 标注为``采样$+$修复''后最佳路径代价 $J$；蓝色越深 $J$ 越接近基线 $29$，全网格 $21/25$ cell 收敛至 $[29,30]$。}
+  \label{fig:q1-sens-body}
+\end{figure}
+
+\textbf{Q2 编码方案消融}：方案 D 因时间窗罚对角峰值 $\sim\!10^5$（约 $596\!\times A$）淹没 one-hot 约束、可行率 $0\%$；方案 C 原始 $0.6\%$ 但解码后均得 $J=84121$——说明动态时间窗约束应在解码阶段处理。\textbf{算法稳定性}：Q2 v1$\to$v2 算法复杂度提升$\sim 3\times$、运行时间提升$\sim 2.7\times$ 后 $\Delta J=0$、路径完全一致；Q3 三个独立 SA seed 收敛 $J$ 完全相同，TOP-5 polish $0.06\!\sim\!0.58\%$ 浮动；Q4 四个不同 warm-start 全部收敛同一 $J=7149$（详见表~\ref{tab:sens-stability}）。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{Q2--Q4 算法稳定性与多 seed 检验汇总}
+    \label{tab:sens-stability}
+    \begin{tabular}{lp{6.4cm}cc}
+        \toprule
+        问题 & 检验方式 & 独立次数 & 最优 $J$ 范围 \\
+        \midrule
+        Q2 & v1（13 起点）vs v2（27 起点$+$LNS$+$3 SA seed$+$3-opt） & 3 SA seed & 全部 $84121$ \\
+        Q3 & 3 个独立 SA seed$+$TOP-5 polish & 3 seed & $[4{,}941{,}906,\,4{,}970{,}704]$ \\
+        Q4 & 4 个 LNS warm-start（ref/reverse/sortA/savings）& 4 起点 & 全部 $7149$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+多 seed 与不同起点结果在已测试邻域内未观察到进一步改进，故 Q2--Q4 表述为``近似最优''或``当前最优可行解''，不声称严格全局最优。综合表~\ref{tab:sens-feasibility}--\ref{tab:sens-stability}~与图~\ref{fig:solver-compare}--\ref{fig:q1-sens-body}：四问最终方案在覆盖性、容量、时间窗复算上全部通过；三层 Python/SDK/CIM 求解器一致性高（Q2/Q3 完全相等，Q1/Q4 gap $\le 6.9\%$）；Q1 与 Q4 关键超参（$A,T_0,K$）的灵敏度均呈``宽稳定区间''特征——从可行性、跨求解器一致性与超参稳健性三个维度共同佐证本文模型与算法的鲁棒性，所有结论均有数据与图表对应，可追溯到 \texttt{results/} 与 \texttt{figures/} 下的具体文件。
+
+% =============================================================
+\section{模型评价}
+% =============================================================
+
+\subsection{模型优势}
+
+\textbf{(1) 题目契合度高}：四问围绕``QUBO 建模 + 玻色 CPQC-550 真机求解 + 量子比特最少化''三条题目硬性主线展开，所有子 QUBO 严格满足 $\le 550$ 比特预算并经 8-bit 精度调整后上传，Q3/Q4 大规模分解策略均明确论证``单子问题 ising 维度 $\le 550$''。
+\textbf{(2) 模型递进清楚}：``TSP$\to$TSPTW$\to$大规模 TSPTW 分解$\to$多车 CVRPTW''逐步引入新增决策变量、约束与目标项，每问相对前一问的扩展点清晰可指；摘要、模型、结果、结论四处叙述一致，避免``各问独立、缺乏主线''的常见缺陷。
+\textbf{(3) 比特预算清晰}：Q1/Q2 为 $n^{2}=225$，Q3 单段 $\le 289$，Q4 单车 $\le 64$，全部低于 550 上限；同时给出全局编码（2500 / 17500 比特）的不可行性论证，体现对量子真机硬件规模约束的真实理解，而非仅做形式化的``写一句符合上限''。
+\textbf{(4) SDK--CIM 链路一致}：通过统一 \texttt{solve\_subqubo(Q,backend)} 抽象层将 SDK 验证与 CIM 真机调用收敛为``仅切换一行后端''，编码、比特预算、8-bit 精度调整、采样修复完全一致；四问累计 12 次 CIM 真机配额任务、Python/SDK/CIM 三方相互印证（Q2/Q3 完全一致，Q1/Q4 gap $\le 6.9\%/0.27\%$），保障``SDK 阶段调通的方案可平滑迁移到真机''这一题目期望的链路完整性。
+
+\subsection{模型不足}
+
+\textbf{(1) 全局最优性证明不足}：仅 Q1（$n=15$ 单车 TSP）由 Held--Karp 精确动态规划严格验证全局最优；Q2--Q4 因规模或软时间窗导致精确求解器代价过高，本文依赖多算法一致性、参数扫描与消融检验给出``在已测试邻域内未观察到改进''的近似最优结论，故按``近似最优''表述，不声称严格全局最优。
+\textbf{(2) SDK SA 原始可行率较低}：one-hot 强约束与 SA 单翻转邻域天然冲突——一次 bit flip 几乎必破坏行/列和为 $1$ 的硬约束，致 SDK SA 原始可行率仅 $0.5\!\sim\!2\%$；本文依赖``采样$\to$2-opt$+$Or-opt 修复''流水线托底，虽得最终可行解但未消除该结构性冲突。
+\textbf{(3) 真机配额与样本数限制}：CIM CPQC-550 平台每 task 占 $1$ 配额，单 task 默认仅 $10$ sample；Q3 seg1 因旧账号配额异常未获返回（如实标注未补造），Q4 block-diag 方案中 $10$ sample 摊薄到 $7$ 段使每段统计冗余下降近一个量级——这是真机部署的客观限制，与算法本身无关。
+\textbf{(4) Q4 客户分配未与车内排序联合优化}：$y_{i,k}$ 由 Clarke--Wright Savings 等 6 种启发式给定，跨车 LNS 在分配域内迭代，但 $y_{i,k}$ 与 $x_{i,p,k}$ 未统一进入同一 QUBO（全 3D one-hot 需 $\sim 17{,}500$ 比特，$\sim 32\!\times$ 真机上限不可行），仍属``分阶段优化''而非完全联合最优。
+
+\subsection{改进与推广}
+
+\textbf{(1) 提升基线强度}：引入精确 ILP（CPLEX/Gurobi 商业求解器）与 CP-SAT 在 $n=15\!\sim\!30$ 中等规模算例上提供更紧的下界，把 Q2--Q4 的``近似最优''推进到``严格最优 $\pm \epsilon$''表述；同时为本文的 LNS$+$SA 启发式提供性能保证（performance ratio）的实测依据。
+\textbf{(2) 改良 SA 邻域}：设计 ``2-swap''、``行/列翻转''等\textbf{保持 one-hot 约束}的复合邻域，或引入插入/删除-修复式邻域，把 SDK SA 原始可行率从 $0.5\!\sim\!2\%$ 提升到 $\ge 30\%$，减弱对外置 2-opt/Or-opt 修复的依赖；同时探索基于约束保持的量子退火专用算子。
+\textbf{(3) 联合编码与方法迁移}：探索 $y_{i,k}\cdot x_{i,p,k}$ 的联合 QUBO 编码并配合分解策略缓解规模压力；本文方法层面（one-hot$+$解码后回评、统一 \texttt{evaluate}、子 QUBO 抽象层、采样$+$修复）可迁移至作业车间调度（JSSP）、图着色、最大切割、二次分配等其他 QUBO 型组合优化问题，模板复用率高。
+
+% =============================================================
+\section{结论}
+% =============================================================
+
+\subsection{逐题结论}
+
+\textbf{问题一}（$n=15$ 单车 TSP）：以位置 one-hot 编码 $x_{i,p}$ 构造 $n^{2}=225$ 比特 QUBO（$A=200$），通过 Kaiwu SDK \texttt{qubo\_matrix\_to\_ising\_matrix} 转 $226\!\times\!226$ Ising 矩阵并经 8-bit 精度调整。Held--Karp 精确 DP 给出 $J^{\star}\!=\!29$，Kaiwu SDK SA（5 seed$\times$200 chain）经 2-opt 修复后亦收敛至 $J\!=\!29$，CIM 真机 10 sample 经修复后给出 $J\!=\!31$（gap $+6.9\%$）；最优访问序见式~\eqref{eq:q1-route}，整条 ``one-hot$\to$QUBO$\to$Ising$\to$8-bit$\to$采样修复'' 链路在小规模上得到精确算法验证。
+
+\textbf{问题二}（$n=15$ TSPTW）：沿用 225 比特 one-hot 仅承担路径排序，时间窗罚 $P_i=10[a_i\!-\!t_i]_+^2+20[t_i\!-\!b_i]_+^2$ \textbf{不进 QUBO}，由解码后统一 \texttt{evaluate} 在递推 $t_{\pi_k}$ 上计算。Python v1/v2、Kaiwu SDK SA、CIM 真机四方均得 $J\!=\!84121$（travel $\!=\!31$，penalty $\!=\!84090$，$12/15$ 客户违反时间窗）——penalty 占 $J$ 的 $99.96\%$，最短路与时间窗最优在该实例不重合，目标退化为``在不可避免的违反中尽量减少惩罚''；该解析为单车结构性现象（累计无等待），佐证 Q4 多车的必要性。
+
+\textbf{问题三}（$n=50$ 大规模 TSPTW）：全局 $50^{2}\!=\!2500$ 比特远超 550 真机预算（$\sim 4.5\!\times$），故采用滚动窗口分 $3$ 段子 QUBO（$289/289/256$，全部 $\le 550$），段内 one-hot$+$段间路径拼接$+$完整路径 evaluate 回评。纯 Python LNS、Kaiwu SDK 分解 SA、CIM 真机 seg3 三方一致得 $J\!=\!4{,}941{,}906$（travel $\!=\!56$, penalty $\!=\!4{,}941{,}850$，$45/50$ 客户违反）；CIM seg2 段内 $H$ 较低但拼接后 $J\!=\!5{,}331{,}165$（高 $7.9\%$），seg1 因配额异常未获返回——以上数据印证``单段能量低不等同于全局业务目标更优，必须以完整路径回评''这一关键设计原则。
+
+\textbf{问题四}（$n=50$ 多车 CVRPTW）：容量 $C\!=\!60$、$\sum d_i\!=\!271$ 给下界 $K_{\min}\!=\!5$；以 Clarke--Wright Savings 等 6 种启发式分配 $y_{i,k}$，每车 $\le 8$ 客户独立子 TSP QUBO $\le 64$ 比特，跨车 LNS$+$多 seed SA 联合优化。$K\!\in\![5,10]$ 全部跑通，$K^{*}\!=\!7$ 取最小 $J\!=\!7149$（travel $\!=\!109$, penalty $\!=\!40$，$3/50$ 违反）；CIM 真机 $K\!=\!7$ 七车独立提交得 $J\!=\!7168$（gap $+0.27\%$）。$K=8$ travel/penalty 为 $114/10$、$J=8124$，体现``车辆资源最省 vs 客户体验最优''Pareto 双方案；$K=8$ block-diag 副方案 1 task 同步求 7 段揭示``配额节约 vs 每段 sample 数''真机部署 trade-off。本文在 $K\!\in\![5,10]$ 上 $4$ 个严格优于参考、$1$ 个持平、$1$ 个差 $0.08\%$，完整回答题目第 (i)--(iv) 全部要求。
+
+\subsection{综合结论}
+
+\textbf{(1) 方法链路}：建立``精确基线$\to$QUBO 建模$\to$Kaiwu SDK 模拟退火验证$\to$CIM 真机求解$\to$大规模分解''统一求解链路，以 \texttt{solve\_subqubo(Q,backend)} 抽象层把 SDK 与真机收敛为``一行后端切换''——SDK 阶段调通的方案可平滑迁移到 CIM 真机，避免``SDK 跑漂亮数据但真机跑不通''的链路断裂。
+\textbf{(2) 比特预算}：四问所有子 QUBO 维度均 $\le 550$（Q1/Q2 全局 $=225$、Q3 单段 $\le 289$、Q4 单车 $\le 64$）且经 \texttt{adjust\_qubo\_matrix\_precision(Q,8)} 8-bit 精度调整后上传 CPQC-550 平台；同时给出全局编码（2500 / 17500 比特）的不可行性论证。
+\textbf{(3) 真实性与可复现}：累计 12 次 CIM 真机配额提交，平台原始返回 spin 解、哈密顿量演化曲线与日志均落到 \texttt{results/真机结果/}，Q3 seg1 因旧账号配额异常未获返回并如实标注``未获得有效返回''而非补造数据；所有 $J$ 经统一 \texttt{evaluate} 在原始 $T_{ij},[a_i,b_i],s_i,d_i,C$ 上计算，与 JSON 字段严格相等。
+\textbf{(4) 工程价值}：滚动窗口分解（Q3）、每车独立子 QUBO（Q4 主方案）与 block-diag 7 段合并（Q4 配额优化对照）三策略，分别对应``规模分解''、``结构分解''与``配额分解''三类工程场景，形成与 550 比特真机上限相协调的求解流程模板，可迁移至中等规模 QUBO 型组合优化的真机部署。
+
+\subsection{展望}
+
+\textbf{(1) 算法层}：引入约束保持邻域或块翻转策略，将 SDK SA 原始可行率从 $0.5\!\sim\!2\%$ 拉升至 $\ge 30\%$，从而消除对外置 2-opt/Or-opt 修复的强依赖，使 QUBO 求解链路更接近``纯量子退火''形态；
+\textbf{(2) 验证层}：引入精确 ILP / CP-SAT 求解器对 Q2 ($n=15$) 与 Q3 子段 ($n_{\rm sub}=17$) 提供更紧下界，更严格判断 $J=84121$ 与 $J=4{,}941{,}906$ 的最优性，并量化本文启发式的最优性间隙；
+\textbf{(3) 模型层}：探索 $y_{i,k}$ 与 $x_{i,p,k}$ 的联合 QUBO 编码，配合时空分解策略，分析联合编码的``比特数 vs 求解质量''权衡，使 Q4 模型从``分阶段优化''推进到``联合优化''。
+
+% =============================================================
+%  参考文献：thebibliography 自动输出``参考文献''标题
+% =============================================================
+\begin{thebibliography}{99}
+
+\bibitem{boson2024cpqc} 玻色量子. CPQC-550 相干伊辛机用户手册（Kaiwu SDK 1.3.1）[Z/OL]. 北京: 北京玻色量子科技有限公司, 2024. \url{https://platform.qboson.com}, 访问时间：2026-04-28.
+
+\bibitem{yamamoto2017cim} Yamamoto Y, Aihara K, Leleu T, et al. Coherent Ising machines---Optical neural networks operating at the quantum limit[J]. \emph{npj Quantum Information}, 2017, 3: 49.
+
+\bibitem{honjo2021cim2000} Honjo T, Sonobe T, Inaba K, et al. 100,000-spin coherent Ising machine[J]. \emph{Science Advances}, 2021, 7(40): eabh0952.
+
+\bibitem{kaiwusdk2024} 玻色量子. Kaiwu SDK 1.3.1 用户手册[Z/OL]. 北京: 北京玻色量子科技有限公司, 2024. \url{https://platform.qboson.com}, 访问时间：2026-04-28.
+
+\bibitem{problem2026} 2026 年全国大学生数学建模竞赛校园选拔赛 A 题（含附件：参考算例.xlsx 等）[Z]. 2026.
+
+\bibitem{lucas2014ising} Lucas A. Ising formulations of many NP problems[J]. \emph{Frontiers in Physics}, 2014, 2: 5.
+
+\bibitem{glover2019qubo} Glover F, Kochenberger G, Du Y. A Tutorial on Formulating and Using QUBO Models[J]. \emph{4OR}, 2019, 17(4): 335--371.
+
+\bibitem{warren2017tspqubo} Warren R H. Solving the Traveling Salesman Problem on a Quantum Annealer[J]. \emph{SN Applied Sciences}, 2020, 2: 75.
+
+\bibitem{kadowaki1998qa} Kadowaki T, Nishimori H. Quantum annealing in the transverse Ising model[J]. \emph{Physical Review E}, 1998, 58(5): 5355--5363.
+
+\bibitem{heldkarp1962dp} Held M, Karp R M. A Dynamic Programming Approach to Sequencing Problems[J]. \emph{Journal of the SIAM}, 1962, 10(1): 196--210.
+
+\bibitem{kirkpatrick1983sa} Kirkpatrick S, Gelatt C D, Vecchi M P. Optimization by Simulated Annealing[J]. \emph{Science}, 1983, 220(4598): 671--680.
+
+\bibitem{lin1973twoopt} Lin S, Kernighan B W. An Effective Heuristic Algorithm for the Traveling-Salesman Problem[J]. \emph{Operations Research}, 1973, 21(2): 498--516.
+
+\bibitem{or1976oropt} Or I. Traveling Salesman-Type Combinatorial Problems and Their Relation to the Logistics of Regional Blood Banking[D]. Evanston: Northwestern University, 1976.
+
+\bibitem{solomon1987vrptw} Solomon M M. Algorithms for the Vehicle Routing and Scheduling Problems with Time Window Constraints[J]. \emph{Operations Research}, 1987, 35(2): 254--265.
+
+\bibitem{shaw1998lns} Shaw P. Using Constraint Programming and Local Search Methods to Solve Vehicle Routing Problems[C]//\emph{CP'98}. Berlin: Springer, 1998: 417--431.
+
+\bibitem{ropke2006alns} Ropke S, Pisinger D. An Adaptive Large Neighborhood Search Heuristic for the Pickup and Delivery Problem with Time Windows[J]. \emph{Transportation Science}, 2006, 40(4): 455--472.
+
+\bibitem{toth2014vrp} Toth P, Vigo D. \emph{Vehicle Routing: Problems, Methods, and Applications}[M]. 2nd ed. Philadelphia: SIAM, 2014.
+
+\bibitem{feld2019cvrp} Feld S, Roch C, Gabor T, et al. A Hybrid Solution Method for the Capacitated Vehicle Routing Problem Using a Quantum Annealer[J]. \emph{Frontiers in ICT}, 2019, 6: 13.
+
+\bibitem{salehi2022vrpqubo} Salehi Ö, Glos A, Miszczak J A. Unconstrained binary models of the travelling salesman problem variants for quantum optimization[J]. \emph{Quantum Information Processing}, 2022, 21: 67.
+
+\bibitem{harwood2021vrptwqubo} Harwood S, Gambella C, Trenev D, et al. Formulating and Solving Routing Problems on Quantum Computers[J]. \emph{IEEE Transactions on Quantum Engineering}, 2021, 2: 3100417.
+
+\bibitem{clarke1964savings} Clarke G, Wright J W. Scheduling of Vehicles from a Central Depot to a Number of Delivery Points[J]. \emph{Operations Research}, 1964, 12(4): 568--581.
+
+\end{thebibliography}
+
+% =============================================================
+%  AI 工具使用声明（按附件 1 规范：须在参考文献之后明确声明）
+%  · 若本参赛队实际使用了 AI 工具，请改用下方注释行的版本，并在
+%    上方 thebibliography 内增列 AI 工具 \bibitem（格式：工具名称, 版本/型号, 开发机构, 使用日期），
+%    并随支撑材料附"AI 工具使用详情.pdf"。
+% =============================================================
+\vspace{0.5em}
+\noindent\textbf{本参赛队未使用任何 AI 工具。}
+% \noindent\textbf{本参赛队使用 AI 工具的详情见支撑材料中的"AI 工具使用详情"说明。}
+
+% =============================================================
+%  附录（按附件 1 规范：放在参考文献之后）
+% =============================================================
+\appendix
+\CTEXsetup[name={附录\,,},number={\Alph{section}},
+           format={\centering\CJKfamily{hei}\zihao{4}\selectfont},
+           beforeskip={0.6ex},afterskip={0.4ex}]{section}
+
+\section{支撑材料文件列表}
+\label{app:files}
+
+支撑材料以 ZIP 形式与本论文同步提交，目录结构如下：
+
+\begin{itemize}
+  \item \texttt{src/}：四问全部可运行 Python 源程序（\texttt{\_q\_lib.py} 共用工具，\texttt{01\_q1\_*.py}--\texttt{15b\_q4\_*\_blockdiag\_*.py} 各阶段脚本，\texttt{13\_all\_q\_cim\_real.py} CIM 真机调用入口）；
+  \item \texttt{data/}：题目附件原始数据（\texttt{参考算例.xlsx} 只读）与本文清洗 / 衍生数据；
+  \item \texttt{results/基础模型/}：四问 Python 与 Kaiwu SDK 求解结果 JSON 与 QUBO 矩阵（\texttt{qubo\_matrices/} 含 8-bit 整数 dense CSV）；
+  \item \texttt{results/真机结果/}：CPQC-550 真机 12 次任务的 spin 解 zip、解码 JSON、哈密顿量 PDF 与平台原始日志，并附四问真机对比汇总表；
+  \item \texttt{results/灵敏度分析/}：Q1 罚系数 $A\!\times\!T_0$ 网格、Q4 车辆数 $K$ 灵敏度的 CSV / JSON；
+  \item \texttt{figures/}, \texttt{tables/}：论文中所有 PDF 矢量图（dpi $\ge 300$ PNG 备份）与 LaTeX 三线表源；
+  \item \texttt{paper/Manuscript/}：本文 LaTeX 主稿（\texttt{main.tex} 为唯一编译入口）；
+  \item \texttt{README.md}：一键复现说明（环境、依赖、四问入口命令）。
+\end{itemize}
+
+\section{运行环境与复现入口}
+\label{app:env}
+
+\textbf{运行环境}：Windows 11（或 64 位 Linux/macOS）；\textbf{Python 3.10}（必需，Kaiwu SDK 1.3.1 wheel 仅支持 \texttt{cp310-none-win\_amd64}）；关键依赖 \texttt{kaiwu==1.3.1}、\texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}、\texttt{openpyxl}、\texttt{tqdm}（详见 \texttt{requirements.txt}）；LaTeX 编译 XeLaTeX（ctex 宏包，TeX Live 2023+），命令 \texttt{xelatex main.tex} 或 \texttt{latexmk -xelatex main.tex}；CIM 真机：玻色 CPQC-550 平台 \url{https://platform.qboson.com}，每次任务 1 配额，矩阵 ising 维度 $\le 550$。
+
+\textbf{复现入口}（仓库根目录下执行）：
+\begin{itemize}
+  \item 全流程：\texttt{python src/00\_run\_all.py}；
+  \item 单问入口：\texttt{python src/01\_q1\_pure\_python.py}、\texttt{05\_q2\_pure\_python.py}、\texttt{05c\_q2\_pure\_python\_v2.py}、\texttt{09\_q3\_kaiwu\_decompose.py}、\texttt{14\_q4\_pure\_python.py}；
+  \item CIM 真机：\texttt{python src/13\_all\_q\_cim\_real.py}（含 token、矩阵上传、spin 解下载、哈密顿量绘图）；
+  \item 灵敏度：\texttt{python src/06\_q1\_sens\_A\_T0.py}、\texttt{python src/14b\_q4\_K\_sensitivity.py}；
+  \item 图表生成：\texttt{python src/draw\_*.py}。
+\end{itemize}
+
+\section{核心源程序文件说明}
+\label{app:src}
+
+为节省正文篇幅，本附录仅列出建模与求解链路的核心文件清单及职责，完整可运行源程序代码以原文件形式随支撑材料 ZIP 提交（\texttt{src/} 下，逐脚本顶部含 docstring 与命令行用法）。
+
+\begin{itemize}
+  \item \texttt{src/\_q\_lib.py}：数据读取（\texttt{load\_data}）、距离矩阵、服务时间递推、统一 \texttt{evaluate}、$P_i(t_i)$ 早晚到二次罚、2-opt/Or-opt/Swap 修复算子——四问共用；
+  \item \texttt{src/01\_q1\_pure\_python.py}：Q1 Held--Karp 精确动态规划基线；
+  \item \texttt{src/02\_q1\_qubo\_kaiwu\_sdk.py}：Q1 位置 one-hot QUBO 构造、Kaiwu SDK 模拟退火求解、\texttt{adjust\_qubo\_matrix\_precision} 8-bit 调整、Ising 矩阵导出 CSV；
+  \item \texttt{src/05\_q2\_pure\_python.py} / \texttt{05c\_q2\_pure\_python\_v2.py}：Q2 多起点$+$LNS$+$多 seed SA 求解 TSPTW；
+  \item \texttt{src/09\_q3\_kaiwu\_decompose.py}：Q3 滚动窗口分解 subQUBO（17/17/16）与 \texttt{solve\_subqubo(Q,backend)} 抽象层；
+  \item \texttt{src/14\_q4\_pure\_python.py}：Q4 多起点$+$跨车 LNS$+$单车 polish$+K$ 扫描；
+  \item \texttt{src/15b\_q4\_k8\_blockdiag\_cim.py}：Q4 $K=8$ block-diag 7 段合并子 QUBO 配额优化方案；
+  \item \texttt{src/13\_all\_q\_cim\_real.py}：CIM 真机统一调用入口（token、矩阵上传、spin 解下载、哈密顿量曲线绘图）；
+  \item \texttt{src/06\_q1\_sens\_A\_T0.py} / \texttt{14b\_q4\_K\_sensitivity.py}：两类灵敏度扫描；
+  \item \texttt{src/draw\_*.py}：图表生成脚本。
+\end{itemize}
+
+\section{真机日志与中间结果说明}
+\label{app:cim}
+
+本文累计向 CPQC-550 真机提交 \textbf{12 次任务}，所有提交矩阵 ising 维度均 $\le 550$ 比特并经 8-bit 精度调整。任务清单见表~\ref{tab:cim-tasks}。
+
+\begin{table}[H]
+    \centering\footnotesize
+    \caption{CIM CPQC-550 真机 12 次任务清单与产出文件}
+    \label{tab:cim-tasks}
+    \begin{tabular}{c c c c l}
+        \toprule
+        任务编号 & 对应问题 & ising 维度 & 备注 & 产出（\texttt{results/真机结果/}下）\\
+        \midrule
+        R-Q1-005 & Q1 ($n=15$) & 226 & 单 task 10 sample & \texttt{q1/cim\_q1\_*.zip / *.json / *.pdf} \\
+        R-Q2-006 & Q2 ($n=15$) & 226 & 单 task 10 sample & \texttt{q2/cim\_q2\_*.zip / *.json / *.pdf} \\
+        R-Q3-seg1 & Q3 段 1 & 290 & 配额异常未获返回 & \texttt{q3/seg1\_failure.log}（如实标注）\\
+        R-Q3-seg2 & Q3 段 2 & 290 & 单 task 10 sample & \texttt{q3/cim\_q3\_seg2\_*} \\
+        R-Q3-seg3 & Q3 段 3 & 257 & 单 task 10 sample & \texttt{q3/cim\_q3\_seg3\_*} \\
+        R-Q4-V1$\sim$V7 & Q4 $K^{*}=7$ 七车 & $\le 65$/车 & 共 7 配额，每车 10 sample & \texttt{q4/cim\_q4\_v\{1..7\}\_*} \\
+        R-Q4-K8-bd & Q4 $K=8$ block-diag & 298 & v2--v8 合并 1 配额 & \texttt{q4/cim\_q4\_k8\_blockdiag\_*} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+(i) 所有真机任务 ising 维度 $\le 550$，可直接通过平台手动上传或 SDK \texttt{CIMOptimizer} 提交；(ii) Q3 seg1 因旧账号配额异常未获返回，未补造数据，以 \texttt{seg1\_failure.log} 如实标注；(iii) 真机 spin 解长度 $=$ ising 维度 $=$ QUBO 维度 $+1$（含 1 个辅助自旋），解码取 \texttt{spin[:nvar]}，最后 1 位丢弃。
+
+\section{Q2 逐客户调度明细表}
+\label{app:q2-schedule}
+
+为压缩正文篇幅，Q2 15 客户的逐点服务开始时刻、$[a_i,b_i]$ 与单点惩罚 $P_i$ 详表移至本附录。
+
+\input{../../tables/tab_02_q2_schedule.tex}
+
+\section{扩展图与灵敏度网格}
+\label{app:fig-extra}
+
+\textbf{Q1 罚系数与初温灵敏度网格}：
+
+\input{../../tables/tab_q1_sens_A_T0.tex}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_rebuild_q1_sensitivity_heatmap.pdf}
+  \caption{Q1 $A\!\times\!T_0$ 灵敏度热图（$5\!\times\!5$ 网格，3 seed 平均）。(a) 平均原始 SA 可行率；(b) 原始 SA 最佳路径代价（未经 2-opt 修复）。}
+  \label{fig:q1-sens-app}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{fig_rebuild_cim_q1_energy.pdf}
+  \caption{Q1 CIM 真机 10-sample 能量分布（任务 R-Q1-005，225 比特，$A=200$）。最低能量样本经``采样$\to$修复''后 travel $=31$。}
+  \label{fig:q1-cim-h}
+\end{figure}
+
+\textbf{Q2 CIM 哈密顿量与编码消融}：
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{fig_02c_q2_kaiwu_hamiltonian.pdf}
+  \caption{Q2 CIM 真机哈密顿量演化曲线（任务 R-Q2-006，226 维 Ising，10 个独立样本）。最低能量样本解码后经 polish 得 $J=84121$。}
+  \label{fig:q2-cim-h}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{fig_rebuild_q2_ablation_cd.pdf}
+  \caption{Q2 编码方案 C vs D 消融（5 seeds$\times$200 chains）。(a) C $=0.67\%$, D $=0\%$；(b) D 对角 TW 罚 $\approx 596\!\times A$。}
+  \label{fig:q2-abl}
+\end{figure}
+
+\textbf{Q3 完整 50 客户路径与 CIM 能量}：
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{fig_rebuild_q3_route.pdf}
+  \caption{Q3 $n=50$ 单车 TSPTW 完整最优访问路径（travel $=56$, penalty $=4{,}941{,}850$, $J=4{,}941{,}906$）。绿色节点 5/50 为时间窗满足，红色 45/50 为违反，灰色为配送中心。}
+  \label{fig:q3-route}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{fig_rebuild_cim_q3_energy.pdf}
+  \caption{Q3 CIM 真机 10-sample 能量分布（3 段，每段 $\le 289$ 比特）。蓝 seg2（$\min H = 36254$）、橙 seg3（$\min H = 29400$）；seg3 经局部修复后与基线一致。}
+  \label{fig:q3-cim-h}
+\end{figure}
+
+\textbf{Q4 多车甘特图、违反分布、Pareto 与 CIM 能量}：
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{fig_rebuild_q4_gantt.pdf}
+  \caption{Q4 $K^{*}=7$ 主方案多车时间窗甘特图。蓝条 $=$ 时间窗，彩块 $=$ 按时服务（按车着色，绿/橙/红 $=$ 按时/早到/迟到）。}
+  \label{fig:q4-gantt}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{fig_04_q4_violation.pdf}
+  \caption{Q4 $K^{*}=7$ 主方案 50 客户时间窗违反分布柱状图；仅 3 客户存在轻微违反（合计 penalty $=40$）。}
+  \label{fig:q4-violation}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_rebuild_q4_pareto_k7_k8.pdf}
+  \caption{Q4 $K^{*}=7$（综合最优）vs $K=8$（客户体验最优）双方案 Pareto 对比。(a) 四维指标（车辆数/travel/penalty/$J$，y 轴 symlog）；(b) travel$\times$penalty Pareto 平面，$K\!\in\![5,10]$ 全部六点。}
+  \label{fig:q4-pareto}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_rebuild_cim_q4_minH_per_vehicle.pdf}
+  \caption{Q4 CIM 真机 $K^{*}=7$ 七车 subQUBO 最低哈密顿量分布（每车 1 task$\times$10 sample，子 QUBO $\le 64$ 比特）。V3 路线最长（8 客户、64 比特）真机给出最深能量 $\min H = -14276$；最低能量样本拼接后 \texttt{evaluate} 回评得 $J=7168$。}
+  \label{fig:q4-cim-h}
+\end{figure}
+
+\textbf{Q4 比特预算每车分布}：
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{fig_04c_q4_qubits_per_vehicle.pdf}
+  \caption{Q4 $K^{*}=7$ 主方案每车 subQUBO 比特数分布。最大 64 比特（8 客户路线 V3），最小 49 比特（7 客户路线），均远低于 CPQC-550 上限（红虚线）。}
+  \label{fig:q4-qubits}
+\end{figure}
+
+\end{document}
